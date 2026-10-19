@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>Pyme BJ Tropical Bayamo · DEMO</title>
+<style>
+:root{--bg:#f7f5f2;--surface:#fff;--surface-2:#faf8f5;--ink:#0f172a;--ink-2:#334155;--muted:#64748b;--brand:#b45309;--brand-2:#d97706;--brand-soft:#fef3c7;--line:#e2e8f0;--line-2:#f1f5f9;--ok:#059669;--ok-soft:#d1fae5;--bad:#dc2626;--bad-soft:#fee2e2;--warn:#d97706;--warn-soft:#fef3c7;--info:#0284c7;--info-soft:#e0f2fe;--purple:#7c3aed;--purple-soft:#ede9fe;--shadow-sm:0 1px 2px rgba(15,23,42,.04),0 1px 3px rgba(15,23,42,.06);--shadow-xl:0 20px 25px -5px rgba(15,23,42,.10);--r-md:12px;--r-lg:16px;--r-xl:20px;--r-2xl:24px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100dvh;font-size:15px;line-height:1.5;padding-bottom:env(safe-area-inset-bottom);overflow-x:hidden}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit}
+.login{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 20px;background:radial-gradient(1000px 600px at 50% -10%,#fde68a40,transparent 70%),var(--bg)}
+.login-card{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-2xl);padding:32px 24px;box-shadow:var(--shadow-xl);text-align:center}
+.logo-big{font-size:52px}
+.login-card h1{font-size:20px;margin:12px 0 4px;font-weight:800;letter-spacing:-.02em}
+.login-card .sub{font-size:13px;color:var(--muted);margin:0}
+.dots{display:flex;gap:16px;justify-content:center;margin:24px 0 12px}
+.dot{width:14px;height:14px;border-radius:50%;background:#e2e8f0;transition:.2s}
+.dot.on{background:var(--brand);transform:scale(1.15);box-shadow:0 0 0 4px var(--brand-soft)}
+.err{min-height:22px;font-size:13px;color:var(--bad);margin-bottom:8px;font-weight:600}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.key{height:60px;border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);font-size:22px;font-weight:600;color:var(--ink)}
+.key:active{transform:scale(.96);background:var(--surface-2)}
+.key-ghost{font-size:20px;color:var(--muted)}
+.key-ok{background:var(--brand);border-color:var(--brand);color:#fff}
+.hint{margin-top:20px;font-size:12px;color:var(--muted);line-height:1.8;background:var(--surface-2);padding:12px;border-radius:var(--r-md)}
+.hint b{color:var(--ink-2)}
+.demo-badge{background:var(--warn-soft);color:#92400e;border:1px solid #fde68a;border-radius:var(--r-md);padding:8px 12px;font-size:11px;font-weight:700;text-align:center;margin-bottom:16px;letter-spacing:.03em}
+.appbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.appbar-in{max-width:960px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:10px;padding-top:calc(12px + env(safe-area-inset-top))}
+.brand{font-weight:800;font-size:15px;line-height:1.1;min-width:0;overflow:hidden}
+.brand small{display:block;font-weight:500;font-size:11px;color:var(--muted);margin-top:2px}
+.chip{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);flex-shrink:0}
+.badge{background:var(--brand-soft);color:#92400e;padding:4px 10px;border-radius:999px;font-weight:700;font-size:11px;white-space:nowrap}
+.btn-logout{border:1px solid var(--line);background:var(--surface);border-radius:var(--r-md);padding:8px 12px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 0;max-width:960px;margin:0 auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.wrap{max-width:960px;margin:0 auto;padding:16px 16px calc(48px + env(safe-area-inset-bottom))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:20px;box-shadow:var(--shadow-sm);margin-bottom:16px;min-width:0}
+.card h2{font-size:17px;margin:0 0 6px;font-weight:800}
+.card h3{font-size:15px;margin:0 0 12px;font-weight:700}
+.small{font-size:12px}.muted{color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:14px;box-shadow:var(--shadow-sm);min-width:0}
+.kpi .k{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .v{font-size:20px;font-weight:800;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
+.kpi .v.ok{color:var(--ok)}.kpi .v.bad{color:var(--bad)}.kpi .v.warn{color:var(--warn)}.kpi .v.purple{color:var(--purple)}
+.kpi .sub{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filters select,.filters input{padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);font-size:13px;font-weight:600;color:var(--ink);max-width:100%}
+.form label{display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:14px}
+.form input,.form select,.form textarea{width:100%;margin-top:6px;padding:13px 14px;border:1px solid var(--line);border-radius:var(--r-md);font-size:16px;background:var(--surface);color:var(--ink);min-height:48px;max-width:100%}
+.form input:focus,.form select:focus,.form textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.form input[readonly]{background:var(--surface-2);color:var(--muted)}
+.form table input{padding:10px 12px;font-size:14px;text-align:right;margin:0;border-radius:8px;min-height:auto}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:560px){.row2,.row3{grid-template-columns:1fr}}
+.info-box{background:var(--surface-2);border:1px dashed var(--line);border-radius:var(--r-md);padding:12px 14px;font-size:13px;margin-bottom:14px;color:var(--ink-2);word-wrap:break-word}
+.info-box b{color:var(--ink)}
+.read-only-note{background:var(--info-soft);border:1px solid #bae6fd;color:#075985;border-radius:var(--r-md);padding:14px;font-size:13px;margin-bottom:16px;line-height:1.6}
+.read-only-note b{color:#0c4a6e;font-weight:800}
+.preview-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:var(--r-md);padding:14px;font-size:13px;margin-bottom:14px;color:#1e3a8a;word-wrap:break-word}
+.preview-box ul{margin:8px 0 0;padding-left:20px}
+.preview-box li{margin:3px 0}
+.sale-info{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #bae6fd;border-radius:var(--r-md);padding:14px;font-size:13px;margin-bottom:14px;color:#0c4a6e}
+.sale-info .row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed #bae6fd;gap:10px;align-items:baseline;flex-wrap:wrap}
+.sale-info .row:last-child{border-bottom:none}
+.sale-info .row.total{border-top:2px solid #7dd3fc;margin-top:4px;padding-top:8px;font-weight:800}
+.summary-box{background:linear-gradient(135deg,#eff6ff,#e0e7ff);border:1px solid #bfdbfe;border-radius:var(--r-lg);padding:16px;font-size:13.5px;margin-bottom:16px;color:#1e3a8a}
+.summary-box .line{display:flex;justify-content:space-between;padding:4px 0;align-items:baseline;gap:10px;flex-wrap:wrap}
+.summary-box .line.total{border-top:1px solid #bfdbfe;margin-top:8px;padding-top:10px;font-weight:800;font-size:15px}
+.summary-box .line .val{font-weight:700;text-align:right;word-break:break-word}
+.summary-box .sect{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#1e40af;font-weight:800;margin:10px 0 4px}
+.summary-box .sect:first-child{margin-top:0}
+.summary-box .line.regalia-mine{background:#c4b5fd;border-radius:8px;padding:8px 10px;margin:4px -10px;color:#4c1d95;font-weight:700}
+.regalia-hero{background:linear-gradient(135deg,#ede9fe,#faf5ff);border:1px solid #c4b5fd;border-radius:var(--r-lg);padding:16px;margin-bottom:16px;color:#5b21b6}
+.regalia-hero .rh-title{font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;opacity:.8;margin-bottom:6px}
+.regalia-hero .rh-line{display:flex;justify-content:space-between;padding:4px 0;font-size:13.5px;flex-wrap:wrap;gap:8px}
+.regalia-hero .rh-line.total{border-top:1px solid #c4b5fd;margin-top:6px;padding-top:8px;font-weight:800;font-size:15px}
+.alert-bad{background:var(--bad-soft);border:1px solid #fecaca;color:#991b1b;border-radius:var(--r-md);padding:12px 14px;font-size:13px;margin-bottom:14px;font-weight:600}
+.alert-ok{background:var(--ok-soft);border:1px solid #a7f3d0;color:#065f46;border-radius:var(--r-md);padding:12px 14px;font-size:13px;margin-bottom:14px;font-weight:600}
+.alert-mine{background:#ede9fe;border:1px solid #c4b5fd;color:#5b21b6;border-radius:var(--r-md);padding:12px 14px;font-size:13px;margin-bottom:14px;font-weight:600}
+.btn{width:100%;padding:14px;border-radius:var(--r-md);border:1px solid var(--line);background:var(--surface);font-size:15px;font-weight:700;color:var(--ink);min-height:48px;transition:.15s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn-secondary{background:var(--surface-2)}
+.btn-purple{background:var(--purple);border-color:var(--purple);color:#fff}
+.btn-sm{width:auto;padding:9px 14px;font-size:13px;border-radius:8px;min-height:auto}
+.table-wrap{overflow-x:auto;margin:0 -20px;padding:0 20px;border-radius:var(--r-md);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:440px}
+th,td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--line-2);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;background:var(--surface-2);position:sticky;top:0}
+tr:last-child td{border-bottom:none}
+.ok-t{color:var(--ok);font-weight:700}.bad-t{color:var(--bad);font-weight:700}.warn-t{color:var(--warn);font-weight:700}.purple-t{color:var(--purple);font-weight:700}
+.status-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+.status-badge.ok{background:var(--ok-soft);color:#065f46}
+.status-badge.warn{background:var(--bad-soft);color:#991b1b}
+.status-badge.none{background:var(--line-2);color:var(--muted)}
+.note{background:var(--warn-soft);border:1px solid #fde68a;color:#92400e;border-radius:var(--r-md);padding:12px 14px;font-size:12.5px;margin-bottom:16px;line-height:1.6}
+.loader{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:200}
+.loader.show{display:flex}
+.loader-box{background:var(--surface);border-radius:var(--r-lg);padding:24px 32px;box-shadow:var(--shadow-xl);text-align:center;font-weight:700;color:var(--ink)}
+.spinner{width:32px;height:32px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-backdrop.show{opacity:1;pointer-events:auto}
+.modal-card{background:var(--surface);border-radius:var(--r-2xl);padding:24px;max-width:480px;width:100%;max-height:90dvh;overflow-y:auto;box-shadow:var(--shadow-xl);transform:translateY(12px) scale(.98);transition:transform .25s;word-wrap:break-word}
+.modal-backdrop.show .modal-card{transform:translateY(0) scale(1)}
+.modal-card h2{font-size:19px;margin:0 0 4px;font-weight:800;text-align:center}
+.modal-card .modal-sub{font-size:12.5px;color:var(--muted);text-align:center;margin:0 0 20px}
+.modal-message{text-align:center;font-size:15px;font-weight:600;padding:16px 0;line-height:1.6}
+.modal-summary{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);padding:16px;margin-bottom:18px}
+.ms-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13.5px;border-bottom:1px dashed var(--line);gap:10px;align-items:baseline;flex-wrap:wrap}
+.ms-row:last-child{border-bottom:none}
+.ms-row span{color:var(--muted)}
+.ms-row b{font-weight:700;color:var(--ink);word-break:break-word}
+.ms-row.total{border-top:2px solid var(--line);border-bottom:none;margin-top:6px;padding-top:12px;font-size:15px}
+.ms-row.ok b{color:var(--ok)}.ms-row.bad b{color:var(--bad)}
+.ms-row.regalia-mine{background:#c4b5fd;border-radius:8px;padding:8px 10px;margin:4px 0;color:#4c1d95}
+.ms-row.falta{background:var(--bad-soft);border-radius:8px;padding:10px;margin:6px 0;color:#991b1b;font-weight:800}
+.ms-row.sobra{background:var(--ok-soft);border-radius:8px;padding:10px;margin:6px 0;color:#065f46;font-weight:800}
+.ms-sect{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800;margin:12px 0 4px}
+.ms-sect:first-child{margin-top:0}
+.modal-q{text-align:center;font-size:15px;font-weight:700;margin:0 0 20px}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-actions.single{grid-template-columns:1fr}
+.modal-actions button{width:100%;padding:14px;border-radius:var(--r-md);border:1px solid var(--line);background:var(--surface);font-size:15px;font-weight:700;color:var(--ink);min-height:48px}
+.modal-actions .btn-primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.modal-actions .btn-secondary{background:var(--surface-2)}
+@media(max-width:380px){.modal-actions{grid-template-columns:1fr}}
+
+/* DUEÑO · dashboard con fecha y gráfico bolsa */
+.hero-date{background:linear-gradient(135deg,#b45309,#d97706);color:#fff;border-radius:var(--r-xl);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-lg)}
+.hero-date .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;opacity:.85;margin-bottom:6px}
+.hero-date .date{font-size:24px;font-weight:800;letter-spacing:-.01em;margin-bottom:2px}
+.hero-date .sub{font-size:13px;opacity:.9;font-weight:500}
+.hero-date .hero-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.25)}
+.hero-date .hero-kpi .k{font-size:10px;text-transform:uppercase;opacity:.85;font-weight:700;letter-spacing:.04em;margin-bottom:2px}
+.hero-date .hero-kpi .v{font-size:17px;font-weight:800}
+
+.year-box{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;border-radius:var(--r-xl);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-lg)}
+.year-box .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;opacity:.7;margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.year-box .label .year-badge{background:rgba(255,255,255,.15);padding:2px 8px;border-radius:999px;font-size:10px}
+.year-box .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px}
+.year-box .item .k{font-size:10.5px;text-transform:uppercase;opacity:.7;font-weight:700;letter-spacing:.04em;margin-bottom:4px}
+.year-box .item .v{font-size:19px;font-weight:800}
+.year-box .item .v.ok{color:#6ee7b7}
+.year-box .item .v.bad{color:#fca5a5}
+.year-box .item .v.purple{color:#c4b5fd}
+
+.chart-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-xl);padding:20px;box-shadow:var(--shadow-sm);margin-bottom:16px}
+.chart-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.chart-title{font-size:15px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px}
+.chart-change{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.chart-change.up{background:var(--ok-soft);color:var(--ok)}
+.chart-change.down{background:var(--bad-soft);color:var(--bad)}
+.chart-ranges{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:10px;flex-wrap:wrap}
+.chart-range-btn{border:none;background:transparent;padding:7px 12px;border-radius:7px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:.15s;min-height:36px}
+.chart-range-btn.on{background:var(--ink);color:#fff}
+.chart-range-btn:hover:not(.on){background:var(--line-2);color:var(--ink)}
+.chart-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.chart-stat .k{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:700;letter-spacing:.05em;margin-bottom:2px}
+.chart-stat .v{font-size:14px;font-weight:800;color:var(--ink)}
+.chart-stat .v.ok{color:var(--ok)}
+.chart-stat .v.bad{color:var(--bad)}
+
+@media(min-width:720px){
+  .wrap{padding:24px 24px 64px}
+  .appbar-in{padding:14px 24px}
+  .tabs{padding:14px 24px 0}
+  .card{padding:24px}
+  .kpis{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+  .kpi .v{font-size:22px}
+  .hero-date .date{font-size:28px}
+  .year-box .item .v{font-size:22px}
+}
+@media(max-width:420px){
+  .wrap{padding:12px 12px 40px}
+  .card{padding:16px}
+  .kpi .v{font-size:18px}
+  .login-card{padding:24px 16px}
+  .brand{font-size:13px}
+  .brand small{font-size:10px}
+  .modal-card{padding:20px}
+  .table-wrap{margin:0 -16px;padding:0 16px}
+  .hero-date .date{font-size:20px}
+  .hero-date .hero-kpi .v{font-size:15px}
+  .chart-card{padding:16px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="loader" class="loader"><div class="loader-box"><div class="spinner"></div>Procesando…</div></div>
+<div id="modal" class="modal-backdrop">
+  <div class="modal-card">
+    <h2 id="modalTitle">Confirmar</h2>
+    <p class="modal-sub" id="modalSub"></p>
+    <div id="modalBody"></div>
+    <div class="modal-actions" id="modalActions">
+      <button id="modalCancel" class="btn btn-secondary">Cancelar</button>
+      <button id="modalConfirm" class="btn btn-primary">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY = 'bjtropical_demo_v6';
+
+const SEED = {
+  users: {
+    '1111': { name:'Sucursal Centro', role:'sucursal', branch:'Centro' },
+    '2222': { name:'Sucursal Norte',  role:'sucursal', branch:'Norte'  },
+    '3333': { name:'Economía',        role:'economista' },
+    '4444': { name:'Dueño',           role:'dueno' }
+  },
+  products: [
+    { id:'frances',  name:'Pan francés',  price:0.50 },
+    { id:'molde',    name:'Pan de molde', price:1.50 },
+    { id:'dulce',    name:'Dulces',       price:1.00 },
+    { id:'bizcocho', name:'Bizcocho',     price:2.00 }
+  ],
+  ingredients: [
+    { id:'harina',   name:'Harina',    unit:'kg', cost:1.20 },
+    { id:'levadura', name:'Levadura',  unit:'kg', cost:8.00 },
+    { id:'azucar',   name:'Azúcar',    unit:'kg', cost:1.50 },
+    { id:'manteca',  name:'Manteca',   unit:'kg', cost:6.00 },
+    { id:'sal',      name:'Sal',       unit:'kg', cost:0.80 },
+    { id:'huevo',    name:'Huevo',     unit:'kg', cost:4.00 },
+    { id:'leche',    name:'Leche',     unit:'L',  cost:1.80 },
+    { id:'empaque',  name:'Empaque',   unit:'u',  cost:0.05 }
+  ],
+  recipes: {
+    frances:{unitsPerCart:100,ingredients:[
+      {ingredientId:'harina',qtyPerCart:6.0},{ingredientId:'levadura',qtyPerCart:0.1},
+      {ingredientId:'sal',qtyPerCart:0.1},{ingredientId:'manteca',qtyPerCart:0.2}]},
+    molde:{unitsPerCart:20,ingredients:[
+      {ingredientId:'harina',qtyPerCart:9.0},{ingredientId:'levadura',qtyPerCart:0.12},
+      {ingredientId:'azucar',qtyPerCart:0.6},{ingredientId:'manteca',qtyPerCart:0.8},
+      {ingredientId:'leche',qtyPerCart:1.6},{ingredientId:'empaque',qtyPerCart:20.0}]},
+    dulce:{unitsPerCart:50,ingredients:[
+      {ingredientId:'harina',qtyPerCart:5.0},{ingredientId:'azucar',qtyPerCart:1.5},
+      {ingredientId:'manteca',qtyPerCart:1.5},{ingredientId:'huevo',qtyPerCart:1.0}]},
+    bizcocho:{unitsPerCart:10,ingredients:[
+      {ingredientId:'harina',qtyPerCart:1.5},{ingredientId:'azucar',qtyPerCart:0.8},
+      {ingredientId:'huevo',qtyPerCart:0.5},{ingredientId:'manteca',qtyPerCart:0.4},
+      {ingredientId:'leche',qtyPerCart:0.5}]}
+  },
+  supplies: [
+    { id:'frazada', name:'Frazada de piso', unit:'u', cost:5.00 },
+    { id:'detergente', name:'Detergente', unit:'u', cost:3.00 },
+    { id:'jabon', name:'Jabón', unit:'u', cost:2.00 },
+    { id:'escoba', name:'Escoba', unit:'u', cost:4.00 }
+  ],
+  tolerance: 3,
+  regaliaLimit: 10
+};
+
+let DB = null;
+
+function loadDB(){ try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; } catch(e) { return null; } }
+function saveDB(){ try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch(e) {} }
+
+function prodPrice_(id) {
+  const list = (DB && DB.products) ? DB.products : SEED.products;
+  const p = list.find(x => x.id === id);
+  return p ? p.price : 0;
+}
+
+function seedDemo() {
+  const today = new Date();
+  const branches = ['Centro', 'Norte'];
+  const baseCarts = { frances:2, molde:2, dulce:1, bizcocho:2 };
+  const names = { Centro:['Juan Pérez','María López','Carlos Ruiz'], Norte:['Ana Díaz','Pedro Sánchez'] };
+  const producciones = [], ventas = [], gastos = [], cierres = [], regalias = [], movs = [], fisicos = [];
+
+  const startDate = new Date(Date.now() - 10*86400000);
+  const initialStock = { harina:400, levadura:5, azucar:50, manteca:50, sal:3, huevo:25, leche:50, empaque:500 };
+  const startStr = isoDate(startDate);
+
+  branches.forEach(b => {
+    SEED.ingredients.forEach(ing => {
+      movs.push({ id: uid(), date: startStr, branch: b, ingredientId: ing.id, type: 'ENTRADA_INICIAL', qty: initialStock[ing.id] || 0, unitCost: ing.cost, ref: 'Stock apertura', ts: startDate.getTime(), user: 'Economía' });
+    });
+  });
+
+  // Generar datos de más días para que el gráfico del año tenga algo
+  const daysBack = 90; // 90 días de historia
+  for (let d = daysBack; d >= 0; d--) {
+    const dt = new Date(today.getFullYear(), today.getMonth(), today.getDate()-d);
+    const date = isoDate(dt);
+    const ts = dt.getTime();
+    branches.forEach((b, bi) => {
+      SEED.products.forEach((p, pi) => {
+        const rec = SEED.recipes[p.id];
+        const factor = (bi ? 0.65 : 1) * (0.85 + Math.random()*0.3);
+        // Añadir tendencia de crecimiento
+        const trend = 1 + (daysBack - d) * 0.003;
+        const carts = Math.max(1, Math.round(baseCarts[p.id] * factor * trend));
+        const qty = carts * rec.unitsPerCart;
+        producciones.push({ id: uid(), date, branch: b, productId: p.id, carts, qty, ts: ts + pi, user: 'Sucursal ' + b });
+        rec.ingredients.forEach((ri, idx) => {
+          const cantUsada = ri.qtyPerCart * carts;
+          movs.push({ id: uid(), date, branch: b, ingredientId: ri.ingredientId, type: 'SALIDA_PRODUCCION', qty: -cantUsada, unitCost: 1.20, ref: 'Prod ' + p.id + ' x' + carts + 'c', ts: ts + pi*100 + idx, user: 'Sucursal ' + b });
+        });
+        const soldUnits = Math.round(qty * (0.86 + Math.random()*0.11));
+        ventas.push({ id: uid(), date, branch: b, productId: p.id, units: soldUnits, priceAtSale: p.price, ts: ts + pi, user: 'Sucursal ' + b });
+      });
+      if (d % 3 === 0) {
+        const list = names[b];
+        const ben = list[Math.floor(Math.random()*list.length)];
+        const prod = SEED.products[Math.floor(Math.random()*SEED.products.length)];
+        const qtyR = 1 + Math.floor(Math.random()*3);
+        regalias.push({ id: uid(), date, branch: b, productId: prod.id, qty: qtyR, beneficiary: ben, authorizedBy: 'Dueño', reason: 'Atención', registeredBy: 'Sucursal ' + b, registeredRole: 'sucursal', ts: ts + 5000 });
+      }
+      if (d % 2 === 0) {
+        const sup = SEED.supplies[Math.floor(Math.random()*SEED.supplies.length)];
+        const qty = 1 + Math.floor(Math.random()*2);
+        gastos.push({ id: uid(), date, branch: b, supplyName: sup.name, unit: sup.unit, qty, total: qty * sup.cost, justification: 'Compra de ' + sup.name + ' para aseo', supplier: 'Mercado local', paidBy: b === 'Centro' ? 'Rosa' : 'Carlos', ref: 'REC-' + Math.floor(1000+Math.random()*9000), ts, user: 'Sucursal ' + b });
+      }
+      if (d < 30) {
+        const prodC = producciones.filter(p => p.branch === b && p.date === date).reduce((s,p) => s+p.qty*p.price, 0);
+        const regC = regalias.filter(r => r.branch === b && r.date === date).reduce((s,r) => s+r.qty*prodPrice_(r.productId), 0);
+        const aRec = prodC - regC;
+        const gastoDia = gastos.filter(g => g.branch === b && g.date === date).reduce((s,g) => s+g.total, 0);
+        const trans = Math.round(aRec * (0.35 + Math.random()*0.10) * 100) / 100;
+        const enz = Math.round(aRec * (0.25 + Math.random()*0.05) * 100) / 100;
+        const efe = Math.max(0, Math.round((aRec - trans - enz) * 100) / 100);
+        const esperado = efe - gastoDia;
+        const dev = (Math.random() - 0.7) * 3;
+        cierres.push({ id: uid(), date, branch: b, transfermovil: trans, enzona: enz, efectivoCobrado: efe, efectivoContado: Math.max(0, Math.round((esperado + dev) * 100) / 100), ts, user: 'Sucursal ' + b });
+      }
+      if (d === 0 || d === 7 || d === 14) {
+        SEED.ingredients.forEach(ing => {
+          const theo = movs.filter(m => m.branch === b && m.ingredientId === ing.id).reduce((s,m) => s+m.qty, 0);
+          const mult = 0.94 + Math.random()*0.08;
+          fisicos.push({ id: uid(), date, branch: b, ingredientId: ing.id, qty: Math.max(0, Math.round(theo * mult * 100) / 100), ts: ts + 10000, user: 'Sucursal ' + b });
+        });
+      }
+    });
+  }
+
+  DB = {
+    users: SEED.users,
+    products: SEED.products.map(p => ({...p})),
+    ingredients: SEED.ingredients.map(i => ({...i})),
+    recipes: JSON.parse(JSON.stringify(SEED.recipes)),
+    supplies: SEED.supplies.map(s => ({...s})),
+    tolerance: SEED.tolerance,
+    regaliaLimit: SEED.regaliaLimit,
+    productions: producciones, sales: ventas,
+    cashExpenses: gastos, cashCounts: cierres,
+    regalias, stockMoves: movs, physicalCounts: fisicos
+  };
+  saveDB();
+}
+
+function apiMock(action, extra = {}) {
+  const pin = extra.pin || state.authPin || state.pin;
+  const u = DB.users[pin];
+  const now = () => Date.now();
+
+  if (action === 'login') {
+    if (!u) throw new Error('PIN incorrecto');
+    return { user: { name: u.name, role: u.role, branch: u.branch || null } };
+  }
+  if (!u) throw new Error('PIN inválido');
+
+  if (action === 'init') {
+    return { data: {
+      products: DB.products, ingredients: DB.ingredients, recipes: DB.recipes,
+      supplies: DB.supplies, stockMoves: DB.stockMoves, productions: DB.productions,
+      sales: DB.sales, cashExpenses: DB.cashExpenses, cashCounts: DB.cashCounts,
+      regalias: DB.regalias, physicalCounts: DB.physicalCounts,
+      tolerance: DB.tolerance, regaliaLimit: DB.regaliaLimit
+    }};
+  }
+
+  if (action === 'saveProduction') {
+    if (u.role !== 'sucursal') throw new Error('Solo sucursal');
+    const { date, productId, carts } = extra;
+    if (!date || !productId || !carts || carts <= 0) throw new Error('Datos incompletos');
+    const rec = DB.recipes[productId];
+    if (!rec || !rec.unitsPerCart) throw new Error('Producto sin receta');
+    const totalUnits = carts * rec.unitsPerCart;
+    DB.productions.push({ id: uid(), date, branch: u.branch, productId, carts, qty: totalUnits, ts: now(), user: u.name });
+    rec.ingredients.forEach(ri => {
+      const cant = ri.qtyPerCart * carts;
+      if (cant <= 0) return;
+      const costo = costoPromedio(u.branch, ri.ingredientId);
+      DB.stockMoves.push({ id: uid(), date, branch: u.branch, ingredientId: ri.ingredientId, type: 'SALIDA_PRODUCCION', qty: -cant, unitCost: costo, ref: 'Prod ' + productId + ' x' + carts + 'c', ts: now(), user: u.name });
+    });
+    saveDB();
+    return { ok: true, unidades: totalUnits };
+  }
+
+  if (action === 'saveSales') {
+    if (u.role !== 'sucursal') throw new Error('Solo sucursal');
+    const { date, productId, units } = extra;
+    if (!date || !productId || !units || units <= 0) throw new Error('Datos incompletos');
+    const prodDay = DB.productions.filter(p => p.branch === u.branch && p.date === date && p.productId === productId).reduce((s,p) => s+p.qty, 0);
+    const regDay = DB.regalias.filter(r => r.branch === u.branch && r.date === date && r.productId === productId).reduce((s,r) => s+r.qty, 0);
+    const soldDay = DB.sales.filter(s => s.branch === u.branch && s.date === date && s.productId === productId).reduce((s,x) => s+x.units, 0);
+    const disponible = prodDay - regDay - soldDay;
+    if (units > disponible) throw new Error('Solo hay ' + disponible + ' u. disponibles');
+    const prod = DB.products.find(p => p.id === productId);
+    DB.sales.push({ id: uid(), date, branch: u.branch, productId, units, priceAtSale: prod ? prod.price : 0, ts: now(), user: u.name });
+    saveDB();
+    return { ok: true };
+  }
+
+  if (action === 'saveExpense') {
+    if (u.role !== 'sucursal') throw new Error('Solo sucursal');
+    if (!extra.justification || !extra.supplier || !extra.paidBy) throw new Error('Faltan datos');
+    if (!extra.qty || extra.qty <= 0) throw new Error('Cantidad inválida');
+    if (!extra.total || extra.total <= 0) throw new Error('Importe inválido');
+    DB.cashExpenses.push({ id: uid(), date: extra.date, branch: u.branch, supplyName: extra.supplyName, unit: extra.unit, qty: extra.qty, total: extra.total, justification: extra.justification, supplier: extra.supplier, paidBy: extra.paidBy, ref: extra.ref || '', ts: now(), user: u.name });
+    saveDB();
+    return { ok: true };
+  }
+
+  if (action === 'saveClose') {
+    if (u.role !== 'sucursal') throw new Error('Solo sucursal');
+    const existing = DB.cashCounts.find(c => c.branch === u.branch && c.date === extra.date);
+    const data = {
+      transfermovil: Number(extra.transfermovil) || 0,
+      enzona: Number(extra.enzona) || 0,
+      efectivoCobrado: Number(extra.efectivoCobrado) || 0,
+      efectivoContado: Number(extra.efectivoContado) || 0,
+      ts: now(), user: u.name
+    };
+    if (existing) Object.assign(existing, data);
+    else DB.cashCounts.push({ id: uid(), date: extra.date, branch: u.branch, ...data });
+    saveDB();
+    return { ok: true };
+  }
+
+  if (action === 'savePhysical') {
+    if (u.role !== 'sucursal') throw new Error('Solo sucursal');
+    (extra.items || []).forEach(it => {
+      DB.physicalCounts.push({ id: uid(), date: extra.date, branch: u.branch, ingredientId: it.ingredientId, qty: Number(it.qty), ts: now(), user: u.name });
+    });
+    saveDB();
+    return { ok: true };
+  }
+
+  if (action === 'saveRegalia') {
+    if (u.role !== 'sucursal') throw new Error('Solo la sucursal registra regalías');
+    if (!extra.beneficiary || !extra.authorizedBy || !extra.reason) throw new Error('Faltan datos');
+    if (!extra.qty || extra.qty <= 0) throw new Error('Cantidad inválida');
+    const branch = u.branch;
+    const prodDay = DB.productions.filter(p => p.branch === branch && p.date === extra.date && p.productId === extra.productId).reduce((s,p) => s+p.qty, 0);
+    const regDay = DB.regalias.filter(r => r.branch === branch && r.date === extra.date && r.productId === extra.productId).reduce((s,r) => s+r.qty, 0);
+    const soldDay = DB.sales.filter(s => s.branch === branch && s.date === extra.date && s.productId === extra.productId).reduce((s,x) => s+x.units, 0);
+    const disponible = prodDay - regDay - soldDay;
+    if (Number(extra.qty) > disponible) throw new Error('Solo hay ' + disponible + ' u. disponibles');
+    DB.regalias.push({ id: uid(), date: extra.date, branch, productId: extra.productId, qty: Number(extra.qty), beneficiary: extra.beneficiary, authorizedBy: extra.authorizedBy, reason: extra.reason, registeredBy: u.name, registeredRole: 'sucursal', ts: now() });
+    saveDB();
+    return { ok: true };
+  }
+
+  if (action === 'setTolerance') { DB.tolerance = Number(extra.value) || 3; saveDB(); return { ok: true }; }
+  throw new Error('Acción no soportada: ' + action);
+}
+
+function costoPromedio(branch, ingredientId) {
+  const entradas = DB.stockMoves.filter(m => m.branch === branch && m.ingredientId === ingredientId && m.qty > 0);
+  if (!entradas.length) {
+    const ing = DB.ingredients.find(i => i.id === ingredientId);
+    return ing ? ing.cost : 0;
+  }
+  const tc = entradas.reduce((s,m) => s+m.qty, 0);
+  const ti = entradas.reduce((s,m) => s+m.qty*m.unitCost, 0);
+  return tc ? ti/tc : 0;
+}
+
+function api(action, extra = {}) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        const payload = { action, pin: state.authPin || state.pin, ...extra };
+        resolve(apiMock(action, payload));
+      } catch (err) { reject(err); }
+    }, 120);
+  });
+}
+
+const app = document.getElementById('app');
+const state = {
+  user: null, pin: '', authPin: '', error: '',
+  tab: '', range: '7', branchFilter: 'all', chartRange: '30',
+  products: [], ingredients: [], recipes: {}, supplies: [],
+  productions: [], sales: [], cashExpenses: [], cashCounts: [],
+  stockMoves: [], physicalCounts: [], regalias: [],
+  tolerance: 3, regaliaLimit: 10, invBranch: 'Centro'
+};
+const ROLE_LABEL = { sucursal:'Sucursal', economista:'Economía', dueno:'Dueño' };
+const BRANCHES = ['Centro','Norte'];
+
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Math.random().toString(36).slice(2,10);
+const pad = n => String(n).padStart(2,'0');
+const isoDate = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const DAYS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const fmtDate = s => { if (!s) return '—'; const [y,m,d] = String(s).split('-').map(Number); if (isNaN(y)) return String(s); const dt = new Date(y,m-1,d); return `${DAYS[dt.getDay()]} ${pad(d)}/${pad(m)}/${y}`; };
+const fmtDateLong = s => { if (!s) return '—'; const [y,m,d] = String(s).split('-').map(Number); if (isNaN(y)) return String(s); const dt = new Date(y,m-1,d); return `${DAYS[dt.getDay()]}, ${d} de ${MONTHS[m-1]} de ${y}`; };
+const fmtNum = n => Number(n||0).toLocaleString('es-ES');
+const fmtMoney = n => '$' + Number(n||0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtMoneyShort = n => { const v = Number(n||0); if (v >= 1000000) return '$' + (v/1000000).toFixed(1) + 'M'; if (v >= 1000) return '$' + (v/1000).toFixed(1) + 'k'; return '$' + v.toFixed(0); };
+const fmtPct = n => (isFinite(n)?n:0).toFixed(1).replace('.',',') + '%';
+const fmtQty = n => (Math.round((Number(n)||0)*1000)/1000).toLocaleString('es-ES');
+const prodName = id => { const p = state.products.find(x=>x.id===id); return p ? p.name : id; };
+const prodPrice = id => { const p = state.products.find(x=>x.id===id); return p ? p.price : 0; };
+const ingName = id => { const i = state.ingredients.find(x=>x.id===id); return i ? i.name : id; };
+
+function loading(on) { document.getElementById('loader').classList.toggle('show', !!on); }
+
+let modalCallback = null;
+function openModal({ title, sub, body, confirmText, cancelText, single, onConfirm, onCancel }) {
+  document.getElementById('modalTitle').textContent = title || 'Aviso';
+  document.getElementById('modalSub').textContent = sub || '';
+  document.getElementById('modalBody').innerHTML = body || '';
+  const actions = document.getElementById('modalActions');
+  const btnCancel = document.getElementById('modalCancel');
+  const btnConfirm = document.getElementById('modalConfirm');
+  if (single) {
+    actions.classList.add('single'); btnCancel.style.display = 'none'; btnConfirm.textContent = confirmText || 'Aceptar';
+  } else {
+    actions.classList.remove('single'); btnCancel.style.display = '';
+    btnCancel.textContent = cancelText || 'Cancelar';
+    btnConfirm.textContent = confirmText || 'Confirmar';
+  }
+  modalCallback = { onConfirm, onCancel };
+  document.getElementById('modal').classList.add('show');
+}
+document.getElementById('modalConfirm').onclick = () => {
+  const cb = modalCallback; document.getElementById('modal').classList.remove('show'); modalCallback = null;
+  if (cb && cb.onConfirm) cb.onConfirm();
+};
+document.getElementById('modalCancel').onclick = () => {
+  const cb = modalCallback; document.getElementById('modal').classList.remove('show'); modalCallback = null;
+  if (cb && cb.onCancel) cb.onCancel();
+};
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target.id === 'modal') { const cb = modalCallback; document.getElementById('modal').classList.remove('show'); modalCallback = null; if (cb && cb.onCancel) cb.onCancel(); }
+});
+
+function showAlert(message, title = 'Aviso', onClose = null) {
+  openModal({ title, sub: '', body: `<div class="modal-message">${message}</div>`, confirmText: 'Aceptar', single: true, onConfirm: () => { if (onClose) onClose(); } });
+}
+function showError(message, title = 'Error') {
+  openModal({ title, sub: '', body: `<div class="modal-message" style="color:var(--bad)">${esc(message)}</div>`, confirmText: 'Entendido', single: true });
+}
+
+function applyData(d) {
+  state.products = d.products || []; state.ingredients = d.ingredients || []; state.recipes = d.recipes || {};
+  state.supplies = d.supplies || []; state.stockMoves = d.stockMoves || []; state.productions = d.productions || [];
+  state.sales = d.sales || []; state.cashExpenses = d.cashExpenses || []; state.cashCounts = d.cashCounts || [];
+  state.regalias = d.regalias || []; state.physicalCounts = d.physicalCounts || [];
+  state.tolerance = Number(d.tolerance) || 3; state.regaliaLimit = Number(d.regaliaLimit) || 10;
+}
+
+function cartCost(productId) {
+  const rec = state.recipes[productId]; if (!rec || !rec.ingredients) return 0;
+  return rec.ingredients.reduce((s, ri) => { const ing = state.ingredients.find(i => i.id === ri.ingredientId); return s + (ing ? ing.cost * ri.qtyPerCart : 0); }, 0);
+}
+function productCost(productId) { const rec = state.recipes[productId]; if (!rec || !rec.unitsPerCart) return 0; return cartCost(productId) / rec.unitsPerCart; }
+function theoreticalStock(branch, ingredientId) {
+  let qty = 0;
+  state.stockMoves.forEach(m => { if (m.branch === branch && m.ingredientId === ingredientId) qty += Number(m.qty) || 0; });
+  return qty;
+}
+function lastPhysical(branch, ingredientId) {
+  const c = state.physicalCounts.filter(p => p.branch === branch && p.ingredientId === ingredientId).sort((a,b) => (b.ts||0) - (a.ts||0));
+  return c[0] || null;
+}
+function inventoryComparison(branch, ingredientId) {
+  const theo = theoreticalStock(branch, ingredientId); const ph = lastPhysical(branch, ingredientId);
+  if (!ph) return { theoretical: theo, physical: null, diff: null, diffPct: null, status: 'sin_conteo' };
+  const diff = ph.qty - theo; const diffPct = theo !== 0 ? (diff/theo) * 100 : 0;
+  return { theoretical: theo, physical: ph.qty, diff, diffPct, status: Math.abs(diffPct) <= state.tolerance ? 'ok' : 'alerta', date: ph.date };
+}
+function inRange(date) { if (state.range === 'all') return true; const days = parseInt(state.range, 10); const d = new Date(); d.setDate(d.getDate() - (days - 1)); return date >= isoDate(d); }
+function matchBranch(b) { return state.branchFilter === 'all' || state.branchFilter === b; }
+function regaliasOfRange() { return state.regalias.filter(r => inRange(r.date) && matchBranch(r.branch)); }
+function expensesOfDay(branch, date) { return state.cashExpenses.filter(e => e.branch === branch && e.date === date).sort((a,b) => (a.ts||0) - (b.ts||0)); }
+function cierreOfDay(branch, date) { return state.cashCounts.find(c => c.branch === branch && c.date === date) || null; }
+
+function salesSummaryOfDay(branch, date) {
+  let producidoUnits = 0, producidoCUP = 0;
+  state.productions.forEach(p => { if (p.branch === branch && p.date === date) { producidoUnits += p.qty; producidoCUP += p.qty * prodPrice(p.productId); } });
+  let regaliasUnits = 0, regaliasCUP = 0, regaliasCount = 0;
+  state.regalias.forEach(r => { if (r.branch === branch && r.date === date) { regaliasUnits += r.qty; regaliasCUP += r.qty * prodPrice(r.productId); regaliasCount++; } });
+  let unitsSold = 0, revenue = 0;
+  state.sales.forEach(s => { if (s.branch === branch && s.date === date) { unitsSold += s.units; revenue += s.units * (s.priceAtSale || prodPrice(s.productId)); } });
+  return { producidoUnits, producidoCUP, regaliasUnits, regaliasCUP, regaliasCount, aVenderUnits: producidoUnits - regaliasUnits, aVenderCUP: producidoCUP - regaliasCUP, unitsSold, revenue };
+}
+
+function cashFlowByDay() {
+  const rows = [];
+  state.cashCounts.forEach(c => {
+    if (!inRange(c.date) || !matchBranch(c.branch)) return;
+    const sales = salesSummaryOfDay(c.branch, c.date);
+    const exp = expensesOfDay(c.branch, c.date);
+    const totalExp = exp.reduce((s,e) => s + e.total, 0);
+    const expected = (c.efectivoCobrado || 0) - totalExp;
+    const diff = (c.efectivoContado || 0) - expected;
+    const pct = expected !== 0 ? (diff/expected) * 100 : 0;
+    const status = Math.abs(pct) <= state.tolerance ? 'ok' : 'alerta';
+    rows.push({ branch: c.branch, date: c.date, producidoCUP: sales.producidoCUP, regaliasCUP: sales.regaliasCUP, aRecaudarCUP: sales.aVenderCUP, transIn: c.transfermovil || 0, enzIn: c.enzona || 0, efeCobrado: c.efectivoCobrado || 0, gastos: totalExp, expected, counted: c.efectivoContado || 0, diff, diffPct: pct, status });
+  });
+  return rows.sort((a,b) => b.date.localeCompare(a.date) || a.branch.localeCompare(b.branch));
+}
+
+function productSummary() {
+  const map = new Map();
+  state.productions.forEach(p => {
+    if (!inRange(p.date) || !matchBranch(p.branch)) return;
+    const o = map.get(p.productId) || {productId:p.productId, produced:0, carts:0, sold:0, revenue:0, regaliaUnits:0, regaliaCost:0};
+    o.produced += p.qty; o.carts += (p.carts || 0); map.set(p.productId, o);
+  });
+  state.sales.forEach(s => {
+    if (!inRange(s.date) || !matchBranch(s.branch)) return;
+    const o = map.get(s.productId) || {productId:s.productId, produced:0, carts:0, sold:0, revenue:0, regaliaUnits:0, regaliaCost:0};
+    o.sold += s.units; o.revenue += s.units * (s.priceAtSale || prodPrice(s.productId));
+    map.set(s.productId, o);
+  });
+  state.regalias.forEach(r => {
+    if (!inRange(r.date) || !matchBranch(r.branch)) return;
+    const o = map.get(r.productId); if (!o) return;
+    o.regaliaUnits += r.qty; o.regaliaCost += r.qty * productCost(r.productId);
+  });
+  return [...map.values()].map(o => {
+    const aVender = o.produced - o.regaliaUnits;
+    const pendiente = aVender - o.sold;
+    const pendientePct = aVender ? (pendiente/aVender)*100 : 0;
+    const cost = productCost(o.productId);
+    const cogs = o.sold * cost;
+    const margin = o.revenue - cogs - o.regaliaCost;
+    return { ...o, cost, cogs, margin, marginPct: o.revenue ? margin/o.revenue*100 : 0, aVender, pendiente, pendientePct, name: prodName(o.productId), status: Math.abs(pendientePct) <= state.tolerance ? 'ok' : 'alerta' };
+  });
+}
+
+function beneficiariesReport() {
+  const map = new Map();
+  regaliasOfRange().forEach(r => {
+    const key = (r.beneficiary || 'Sin nombre') + '|' + r.branch;
+    const o = map.get(key) || { beneficiary: r.beneficiary, branch: r.branch, units: 0, cost: 0, count: 0 };
+    o.units += r.qty; o.cost += r.qty * productCost(r.productId); o.count++;
+    map.set(key, o);
+  });
+  return [...map.values()].sort((a,b) => b.units - a.units);
+}
+
+/* ============================================================
+ * GRÁFICO TIPO BOLSA
+ * ============================================================ */
+function getDailyRevenue(startDate, endDate) {
+  const points = [];
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const cur = new Date(start);
+  while (cur <= end) {
+    const dateStr = isoDate(cur);
+    const rev = state.sales
+      .filter(s => s.date === dateStr && matchBranch(s.branch))
+      .reduce((sum, x) => sum + x.units * (x.priceAtSale || prodPrice(x.productId)), 0);
+    points.push({ date: dateStr, revenue: rev });
+    cur.setDate(cur.getDate() + 1);
+  }
+  return points;
+}
+
+function renderStockChart(points) {
+  if (!points || !points.length) return '<p class="muted small" style="text-align:center;padding:40px 0">Sin datos en el período</p>';
+
+  const w = 800;
+  const h = 260;
+  const padL = 55;
+  const padR = 15;
+  const padT = 20;
+  const padB = 35;
+  const innerW = w - padL - padR;
+  const innerH = h - padT - padB;
+
+  const maxVal = Math.max(0.01, ...points.map(p => p.revenue));
+  // Nice max
+  let niceMax;
+  if (maxVal > 10000) niceMax = Math.ceil(maxVal / 1000) * 1000;
+  else if (maxVal > 1000) niceMax = Math.ceil(maxVal / 500) * 500;
+  else if (maxVal > 100) niceMax = Math.ceil(maxVal / 50) * 50;
+  else if (maxVal > 10) niceMax = Math.ceil(maxVal / 10) * 10;
+  else niceMax = Math.max(10, Math.ceil(maxVal));
+
+  const xFor = i => points.length === 1 ? padL + innerW / 2 : padL + (i / (points.length - 1)) * innerW;
+  const yFor = v => padT + innerH - (v / niceMax) * innerH;
+
+  const pathPoints = points.map((p, i) => ({ x: xFor(i), y: yFor(p.revenue), ...p }));
+
+  const linePath = pathPoints.map((p, i) => (i === 0 ? `M${p.x.toFixed(1)},${p.y.toFixed(1)}` : `L${p.x.toFixed(1)},${p.y.toFixed(1)}`)).join(' ');
+  const firstX = pathPoints[0].x;
+  const lastX = pathPoints[pathPoints.length - 1].x;
+  const bottomY = padT + innerH;
+  const areaPath = `${linePath} L${lastX.toFixed(1)},${bottomY} L${firstX.toFixed(1)},${bottomY} Z`;
+
+  // Grid
+  const gridLines = [0, 0.25, 0.5, 0.75, 1].map(pct => {
+    const y = padT + innerH - pct * innerH;
+    const val = pct * niceMax;
+    return `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${padL + innerW}" y2="${y.toFixed(1)}" stroke="#e2e8f0" stroke-width="1"/>
+            <text x="${(padL - 8)}" y="${(y + 4).toFixed(1)}" text-anchor="end" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">${fmtMoneyShort(val)}</text>`;
+  }).join('');
+
+  // X labels (max 6)
+  const labelCount = Math.min(6, points.length);
+  const xLabels = [];
+  for (let i = 0; i < labelCount; i++) {
+    const idx = labelCount === 1 ? 0 : Math.round(i * (points.length - 1) / (labelCount - 1));
+    if (points[idx]) {
+      const d = points[idx].date;
+      xLabels.push(`<text x="${xFor(idx).toFixed(1)}" y="${(h - 12)}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">${d.slice(8)}/${d.slice(5,7)}</text>`);
+    }
+  }
+
+  // Max point marker
+  const maxP = pathPoints.reduce((m, p) => p.revenue > m.revenue ? p : m, pathPoints[0]);
+  const showMaxMarker = maxP.revenue > 0;
+
+  // Dots solo si pocos puntos
+  const showDots = points.length <= 31;
+  const dots = showDots ? pathPoints.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.5" fill="#b45309"/>`).join('') : '';
+
+  return `
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;display:block" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="chartAreaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#b45309" stop-opacity="0.45"/>
+          <stop offset="100%" stop-color="#b45309" stop-opacity="0.02"/>
+        </linearGradient>
+        <linearGradient id="chartLineGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#b45309"/>
+          <stop offset="100%" stop-color="#d97706"/>
+        </linearGradient>
+      </defs>
+      ${gridLines}
+      <path d="${areaPath}" fill="url(#chartAreaGrad)"/>
+      <path d="${linePath}" fill="none" stroke="url(#chartLineGrad)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+      ${dots}
+      ${showMaxMarker ? `<circle cx="${maxP.x.toFixed(1)}" cy="${maxP.y.toFixed(1)}" r="5" fill="#15803d" stroke="white" stroke-width="2"/>
+      <text x="${maxP.x.toFixed(1)}" y="${(maxP.y - 12).toFixed(1)}" text-anchor="middle" fill="#15803d" font-size="11" font-weight="700" font-family="system-ui,sans-serif">${fmtMoneyShort(maxP.revenue)}</text>` : ''}
+      ${xLabels.join('')}
+    </svg>
+  `;
+}
+
+function viewLogin() {
+  app.innerHTML = `<div class="login"><div class="login-card">
+    <div class="demo-badge">DEMO · Datos en este navegador</div>
+    <div class="logo-big">🥖</div>
+    <h1>Pyme BJ Tropical Bayamo</h1>
+    <p class="sub">Control de panadería · Demo</p>
+    <div class="dots">${[0,1,2,3].map(i=>`<span class="dot ${i<state.pin.length?'on':''}"></span>`).join('')}</div>
+    <div class="err">${state.error?esc(state.error):'&nbsp;'}</div>
+    <div class="keypad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="key" data-action="digit" data-digit="${n}">${n}</button>`).join('')}<button class="key key-ghost" data-action="clear">⌫</button><button class="key" data-action="digit" data-digit="0">0</button><button class="key key-ok" data-action="enter">✓</button></div>
+    <div class="hint"><b>PINs del demo</b><br>1111 Centro · 2222 Norte<br>3333 Economía · 4444 Dueño</div>
+  </div></div>`;
+}
+
+async function tryLogin() {
+  if (state.pin.length !== 4) return;
+  loading(true); state.error = '';
+  try {
+    const res = await api('login');
+    state.user = res.user; state.authPin = state.pin; state.pin = '';
+    const data = await api('init'); applyData(data.data);
+    state.tab = state.user.role === 'sucursal' ? 'produccion' : state.user.role === 'economista' ? 'analisis' : 'resumen';
+    render();
+  } catch (err) { state.error = err.message || 'Error'; state.pin = ''; render(); }
+  finally { loading(false); }
+}
+
+/* ============================================================
+ * DUEÑO · DASHBOARD
+ * ============================================================ */
+function viewResumenDueno() {
+  const today = new Date();
+  const todayStr = isoDate(today);
+  const yearStart = `${today.getFullYear()}-01-01`;
+
+  // === HOY ===
+  const todayProd = state.productions.filter(p => p.date === todayStr && matchBranch(p.branch));
+  const todaySales = state.sales.filter(s => s.date === todayStr && matchBranch(s.branch));
+  const todayReg = state.regalias.filter(r => r.date === todayStr && matchBranch(r.branch));
+  const todayExp = state.cashExpenses.filter(e => e.date === todayStr && matchBranch(e.branch));
+  const todayCash = state.cashCounts.filter(c => c.date === todayStr && matchBranch(c.branch));
+
+  const todayRevenue = todaySales.reduce((s, x) => s + x.units * (x.priceAtSale || prodPrice(x.productId)), 0);
+  const todayRegCost = todayReg.reduce((s, r) => s + r.qty * productCost(r.productId), 0);
+  const todayRegUnits = todayReg.reduce((s, r) => s + r.qty, 0);
+  const todayCOGS = todaySales.reduce((s, x) => s + x.units * productCost(x.productId), 0);
+  const todayMargin = todayRevenue - todayCOGS - todayRegCost;
+  const todayGastos = todayExp.reduce((s, e) => s + e.total, 0);
+  const todayProduced = todayProd.reduce((s, p) => s + p.qty, 0);
+  const todaySold = todaySales.reduce((s, x) => s + x.units, 0);
+  const todayCashCobrado = todayCash.reduce((s, c) => s + (c.transfermovil || 0) + (c.enzona || 0) + (c.efectivoCobrado || 0), 0);
+
+  // === AÑO ===
+  const yearProd = state.productions.filter(p => p.date >= yearStart && p.date <= todayStr && matchBranch(p.branch));
+  const yearSales = state.sales.filter(s => s.date >= yearStart && s.date <= todayStr && matchBranch(s.branch));
+  const yearReg = state.regalias.filter(r => r.date >= yearStart && r.date <= todayStr && matchBranch(r.branch));
+  const yearExp = state.cashExpenses.filter(e => e.date >= yearStart && e.date <= todayStr && matchBranch(e.branch));
+  const yearCash = state.cashCounts.filter(c => c.date >= yearStart && c.date <= todayStr && matchBranch(c.branch));
+
+  const yearRevenue = yearSales.reduce((s, x) => s + x.units * (x.priceAtSale || prodPrice(x.productId)), 0);
+  const yearRegCost = yearReg.reduce((s, r) => s + r.qty * productCost(r.productId), 0);
+  const yearRegUnits = yearReg.reduce((s, r) => s + r.qty, 0);
+  const yearCOGS = yearSales.reduce((s, x) => s + x.units * productCost(x.productId), 0);
+  const yearMargin = yearRevenue - yearCOGS - yearRegCost;
+  const yearMarginPct = yearRevenue ? (yearMargin / yearRevenue) * 100 : 0;
+  const yearGastos = yearExp.reduce((s, e) => s + e.total, 0);
+  const yearProduced = yearProd.reduce((s, p) => s + p.qty, 0);
+  const yearSold = yearSales.reduce((s, x) => s + x.units, 0);
+  const yearCashCobrado = yearCash.reduce((s, c) => s + (c.transfermovil || 0) + (c.enzona || 0) + (c.efectivoCobrado || 0), 0);
+  const yearDesvio = yearCash.reduce((s, c) => {
+    const exp = expensesOfDay(c.branch, c.date).reduce((a, e) => a + e.total, 0);
+    const expEfe = (c.efectivoCobrado || 0) - exp;
+    return s + ((c.efectivoContado || 0) - expEfe);
+  }, 0);
+
+  // === GRÁFICO ===
+  let daysBack = parseInt(state.chartRange, 10);
+  if (state.chartRange === 'all') {
+    const allDates = [...state.sales.map(s => s.date), ...state.productions.map(p => p.date)].filter(Boolean).sort();
+    daysBack = allDates.length > 0 ? Math.ceil((today - new Date(allDates[0] + 'T00:00:00')) / 86400000) + 1 : 30;
+    if (daysBack < 1) daysBack = 30;
+  }
+  const startChart = new Date(today);
+  startChart.setDate(startChart.getDate() - (daysBack - 1));
+  const chartPoints = getDailyRevenue(startChart, today);
+
+  const chartMax = Math.max(0, ...chartPoints.map(p => p.revenue));
+  const chartMin = Math.min(...chartPoints.map(p => p.revenue), 0);
+  const chartSum = chartPoints.reduce((s, p) => s + p.revenue, 0);
+  const chartAvg = chartPoints.length ? chartSum / chartPoints.length : 0;
+  const chartFirst = chartPoints[0]?.revenue || 0;
+  const chartLast = chartPoints[chartPoints.length - 1]?.revenue || 0;
+  const chartChangePct = chartFirst > 0 ? ((chartLast - chartFirst) / chartFirst) * 100 : 0;
+  const isPositive = chartChangePct >= 0;
+
+  // Comparativa por sucursal (año)
+  const branchData = BRANCHES.map(b => {
+    const revB = yearSales.filter(s => s.branch === b).reduce((s, x) => s + x.units * (x.priceAtSale || prodPrice(x.productId)), 0);
+    const cogsB = yearSales.filter(s => s.branch === b).reduce((s, x) => s + x.units * productCost(x.productId), 0);
+    const regB = yearReg.filter(r => r.branch === b).reduce((s, r) => s + r.qty * productCost(r.productId), 0);
+    const marginB = revB - cogsB - regB;
+    return { branch: b, revenue: revB, margin: marginB, marginPct: revB ? (marginB/revB)*100 : 0 };
+  });
+  const maxBranchRev = Math.max(1, ...branchData.map(b => b.revenue));
+
+  // Top productos (año)
+  const yearProdsMap = new Map();
+  yearSales.forEach(s => {
+    const o = yearProdsMap.get(s.productId) || { productId: s.productId, sold: 0, revenue: 0 };
+    o.sold += s.units;
+    o.revenue += s.units * (s.priceAtSale || prodPrice(s.productId));
+    yearProdsMap.set(s.productId, o);
+  });
+  const yearProds = [...yearProdsMap.values()].map(o => {
+    const cost = productCost(o.productId);
+    const cogs = o.sold * cost;
+    const reg = yearReg.filter(r => r.productId === o.productId).reduce((s, r) => s + r.qty * cost, 0);
+    return { ...o, cogs, reg, margin: o.revenue - cogs - reg, marginPct: o.revenue ? ((o.revenue - cogs - reg)/o.revenue)*100 : 0, name: prodName(o.productId) };
+  }).sort((a,b) => b.margin - a.margin);
+  const topProds = yearProds.slice(0, 3);
+
+  return `
+  <div class="filters">
+    <select data-action="branch"><option value="all" ${state.branchFilter === 'all' ? 'selected' : ''}>Todas las sucursales</option>${BRANCHES.map(b => `<option value="${b}" ${state.branchFilter === b ? 'selected' : ''}>${b}</option>`).join('')}</select>
+  </div>
+
+  <!-- HOY -->
+  <div class="hero-date">
+    <div class="label">HOY</div>
+    <div class="date">${fmtDateLong(todayStr)}</div>
+    <div class="sub">Resumen del día</div>
+    <div class="hero-kpis">
+      <div class="hero-kpi">
+        <div class="k">Ingresos</div>
+        <div class="v">${fmtMoney(todayRevenue)}</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="k">Margen</div>
+        <div class="v">${fmtMoney(todayMargin)}</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="k">Producido</div>
+        <div class="v">${fmtNum(todayProduced)} u.</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="k">Vendido</div>
+        <div class="v">${fmtNum(todaySold)} u.</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="k">Gastos</div>
+        <div class="v">${fmtMoney(todayGastos)}</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="k">Regalías</div>
+        <div class="v">${fmtNum(todayRegUnits)} u.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AÑO -->
+  <div class="year-box">
+    <div class="label">
+      ACUMULADO AÑO ${today.getFullYear()}
+      <span class="year-badge">1 ene — ${pad(today.getDate())}/${pad(today.getMonth()+1)}</span>
+    </div>
+    <div class="grid">
+      <div class="item">
+        <div class="k">Ingresos totales</div>
+        <div class="v">${fmtMoney(yearRevenue)}</div>
+      </div>
+      <div class="item">
+        <div class="k">Margen neto</div>
+        <div class="v ${yearMargin >= 0 ? 'ok' : 'bad'}">${fmtMoney(yearMargin)}</div>
+      </div>
+      <div class="item">
+        <div class="k">Margen %</div>
+        <div class="v ${yearMarginPct >= 25 ? 'ok' : yearMarginPct < 10 ? 'bad' : ''}">${fmtPct(yearMarginPct)}</div>
+      </div>
+      <div class="item">
+        <div class="k">Regalías</div>
+        <div class="v purple">${fmtMoney(yearRegCost)}</div>
+      </div>
+      <div class="item">
+        <div class="k">Gastos</div>
+        <div class="v">${fmtMoney(yearGastos)}</div>
+      </div>
+      <div class="item">
+        <div class="k">Cobrado</div>
+        <div class="v">${fmtMoney(yearCashCobrado)}</div>
+      </div>
+      <div class="item">
+        <div class="k">Desvío caja</div>
+        <div class="v ${Math.abs(yearDesvio) < 1 ? 'ok' : 'bad'}">${fmtMoney(yearDesvio)}</div>
+      </div>
+      <div class="item">
+        <div class="k">Producido</div>
+        <div class="v">${fmtNum(yearProduced)} u.</div>
+      </div>
+      <div class="item">
+        <div class="k">Vendido</div>
+        <div class="v">${fmtNum(yearSold)} u.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRÁFICO BOLSA -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">
+          📈 Ingresos diarios
+          <span class="chart-change ${isPositive ? 'up' : 'down'}">${isPositive ? '▲' : '▼'} ${fmtPct(Math.abs(chartChangePct))}</span>
+        </div>
+        <div class="muted small" style="margin-top:4px">${chartRangeLabel(state.chartRange)}</div>
+      </div>
+      <div class="chart-ranges">
+        <button class="chart-range-btn ${state.chartRange === '7' ? 'on' : ''}" data-action="chartRange" data-range="7">7D</button>
+        <button class="chart-range-btn ${state.chartRange === '30' ? 'on' : ''}" data-action="chartRange" data-range="30">30D</button>
+        <button class="chart-range-btn ${state.chartRange === '90' ? 'on' : ''}" data-action="chartRange" data-range="90">90D</button>
+        <button class="chart-range-btn ${state.chartRange === '365' ? 'on' : ''}" data-action="chartRange" data-range="365">Año</button>
+        <button class="chart-range-btn ${state.chartRange === 'all' ? 'on' : ''}" data-action="chartRange" data-range="all">Todo</button>
+      </div>
+    </div>
+    ${renderStockChart(chartPoints)}
+    <div class="chart-stats">
+      <div class="chart-stat"><div class="k">Mínimo</div><div class="v">${fmtMoney(chartMin)}</div></div>
+      <div class="chart-stat"><div class="k">Máximo</div><div class="v ok">${fmtMoney(chartMax)}</div></div>
+      <div class="chart-stat"><div class="k">Promedio diario</div><div class="v">${fmtMoney(chartAvg)}</div></div>
+      <div class="chart-stat"><div class="k">Total período</div><div class="v">${fmtMoney(chartSum)}</div></div>
+      <div class="chart-stat"><div class="k">Cambio</div><div class="v ${isPositive ? 'ok' : 'bad'}">${isPositive ? '+' : ''}${fmtPct(chartChangePct)}</div></div>
+    </div>
+  </div>
+
+  <!-- COMPARATIVA SUCURSALES -->
+  <div class="card">
+    <h3>Comparativa por sucursal · Año</h3>
+    ${branchData.map(b => `
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:6px">
+          <span>${esc(b.branch)}</span>
+          <span class="${b.marginPct >= 25 ? 'ok-t' : b.marginPct < 10 ? 'bad-t' : ''}">${fmtPct(b.marginPct)}</span>
+        </div>
+        <div style="background:var(--line-2);border-radius:999px;height:12px;overflow:hidden;margin-bottom:4px">
+          <div style="height:100%;background:linear-gradient(to right, var(--brand), var(--brand-2));width:${Math.max(3, (b.revenue/maxBranchRev)*100)}%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);flex-wrap:wrap;gap:6px">
+          <span>Ingresos: <b style="color:var(--ink)">${fmtMoney(b.revenue)}</b></span>
+          <span>Margen: <b style="color:var(--ink)">${fmtMoney(b.margin)}</b></span>
+        </div>
+      </div>
+    `).join('')}
+  </div>
+
+  <!-- TOP 3 -->
+  <div class="card">
+    <h3>Top 3 productos por margen · Año</h3>
+    ${topProds.length ? `<div class="table-wrap"><table>
+      <thead><tr><th>Producto</th><th>Vend.</th><th>Ingresos</th><th>Margen</th><th>Margen %</th></tr></thead>
+      <tbody>${topProds.map(o => `<tr>
+        <td>${esc(o.name)}</td>
+        <td>${fmtNum(o.sold)}</td>
+        <td>${fmtMoney(o.revenue)}</td>
+        <td>${fmtMoney(o.margin)}</td>
+        <td class="${o.marginPct >= 25 ? 'ok-t' : o.marginPct < 10 ? 'bad-t' : ''}">${fmtPct(o.marginPct)}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>` : '<p class="muted small">Sin datos.</p>'}
+  </div>
+
+  <!-- RENTABILIDAD COMPLETA -->
+  <div class="card">
+    <h3>Rentabilidad por producto · Año</h3>
+    ${yearProds.length ? `<div class="table-wrap"><table>
+      <thead><tr><th>Producto</th><th>Vend.</th><th>Ingresos</th><th>COGS</th><th>Regalías</th><th>Margen</th><th>Margen %</th></tr></thead>
+      <tbody>${yearProds.map(o => `<tr>
+        <td>${esc(o.name)}</td>
+        <td>${fmtNum(o.sold)}</td>
+        <td>${fmtMoney(o.revenue)}</td>
+        <td>${fmtMoney(o.cogs)}</td>
+        <td class="purple-t">${fmtMoney(o.reg)}</td>
+        <td>${fmtMoney(o.margin)}</td>
+        <td class="${o.marginPct >= 25 ? 'ok-t' : o.marginPct < 10 ? 'bad-t' : ''}">${fmtPct(o.marginPct)}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>` : '<p class="muted small">Sin datos.</p>'}
+  </div>`;
+}
+
+function chartRangeLabel(r) {
+  if (r === '7') return 'Últimos 7 días';
+  if (r === '30') return 'Últimos 30 días';
+  if (r === '90') return 'Últimos 90 días';
+  if (r === '365') return 'Últimos 365 días';
+  return 'Todo el histórico';
+}
+
+/* Resto de las vistas (sucursal, economía) sin cambios */
+function viewProduccion() {
+  const today = isoDate(new Date());
+  const rows = state.productions.filter(p => p.branch === state.user.branch).sort((a,b) => (b.ts||0) - (a.ts||0)).slice(0, 8);
+  const opts = state.products.map(p => { const rec = state.recipes[p.id]; return `<option value="${p.id}">${esc(p.name)} (${rec ? rec.unitsPerCart : 0} u./carrito)</option>`; }).join('');
+  return `
+  <div class="note">Paso 1 · Reporta los <b>carritos</b> a producir. El inventario se descuenta automáticamente.</div>
+  <div class="card"><h2>Reportar producción</h2><p class="muted small">Sucursal ${esc(state.user.branch)}</p>
+    <form id="prodForm" class="form" style="margin-top:16px">
+      <label>Fecha<input type="date" name="date" value="${today}" max="${today}" required></label>
+      <label>Producto<select name="productId" id="prodProduct">${opts}</select></label>
+      <label>Número de carritos<input type="number" name="carts" id="prodCarts" inputmode="decimal" min="0" step="0.1" placeholder="0" required></label>
+      <div class="preview-box" id="prodPreview"><div class="muted">Ingresa el número de carritos.</div></div>
+      <button class="btn btn-primary" type="submit">Registrar producción</button>
+    </form></div>
+  <div class="card"><h3>Últimos registros</h3>
+    ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Producto</th><th>Carritos</th><th>Unidades</th></tr></thead>
+    <tbody>${rows.map(r => `<tr><td>${fmtDate(r.date)}</td><td>${esc(prodName(r.productId))}</td><td>${fmtQty(r.carts)}</td><td>${fmtNum(r.qty)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted small">Sin registros.</p>'}
+  </div>`;
+}
+
+function updateProdPreview() {
+  const sel = document.getElementById('prodProduct'); const inp = document.getElementById('prodCarts'); const box = document.getElementById('prodPreview');
+  if (!sel || !inp || !box) return;
+  const rec = state.recipes[sel.value];
+  if (!rec) { box.innerHTML = '<div class="bad-t">Sin carta tecnológica.</div>'; return; }
+  const carts = parseFloat(inp.value) || 0; const units = carts * rec.unitsPerCart;
+  const ings = rec.ingredients.map(ri => { const ing = state.ingredients.find(i => i.id === ri.ingredientId); if (!ing) return ''; return `<li>${esc(ing.name)}: <b>${fmtQty(ri.qtyPerCart * carts)} ${esc(ing.unit)}</b></li>`; }).join('');
+  box.innerHTML = `<div><b>Unidades por carrito:</b> ${rec.unitsPerCart} u.</div><div><b>Carritos:</b> ${fmtQty(carts)} → <b>${fmtNum(units)} unidades</b></div>${carts > 0 ? `<div style="margin-top:8px"><b>Ingredientes a descontar:</b></div><ul>${ings}</ul>` : ''}`;
+}
+
+function viewVentas() {
+  const today = isoDate(new Date());
+  const rows = state.sales.filter(s => s.branch === state.user.branch).sort((a,b) => (b.ts||0) - (a.ts||0)).slice(0, 8);
+  return `
+  <div class="note">Paso 2 · Reporta las <b>unidades vendidas</b>. El desglose por método de pago se ingresa en Caja al cerrar.</div>
+  <div class="card"><h2>Reportar ventas</h2>
+    <form id="salesForm" class="form" style="margin-top:16px">
+      <label>Fecha<input type="date" name="date" id="saleDate" value="${today}" max="${today}" required></label>
+      <label>Producto<select name="productId" id="saleProduct">${state.products.map(p => `<option value="${p.id}">${esc(p.name)} — ${fmtMoney(p.price)}</option>`).join('')}</select></label>
+      <div class="sale-info" id="saleInfo"></div>
+      <label>Total unidades vendidas<input type="number" name="units" id="saleUnitsInput" min="0" step="1" placeholder="0" required></label>
+      <div class="info-box">Total CUP: <b id="saleTotal">$0.00</b></div>
+      <button class="btn btn-primary" type="submit">Registrar venta</button>
+    </form></div>
+  <div class="card"><h3>Últimos registros</h3>
+    ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Producto</th><th>Unidades</th><th>Total</th></tr></thead>
+    <tbody>${rows.map(r => `<tr><td>${fmtDate(r.date)}</td><td>${esc(prodName(r.productId))}</td><td>${fmtNum(r.units)}</td><td>${fmtMoney(r.units * (r.priceAtSale || prodPrice(r.productId)))}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted small">Sin registros.</p>'}
+  </div>`;
+}
+
+function updateSaleInfo() {
+  const sel = document.getElementById('saleProduct'); const dateInput = document.getElementById('saleDate'); const box = document.getElementById('saleInfo');
+  if (!sel || !box) return;
+  const productId = sel.value; const date = (dateInput && dateInput.value) || isoDate(new Date()); const branch = state.user.branch;
+  const prodDay = state.productions.filter(p => p.branch === branch && p.date === date && p.productId === productId).reduce((s,p) => s+p.qty, 0);
+  const regDay = state.regalias.filter(r => r.branch === branch && r.date === date && r.productId === productId).reduce((s,r) => s+r.qty, 0);
+  const soldDay = state.sales.filter(s => s.branch === branch && s.date === date && s.productId === productId).reduce((s,x) => s+x.units, 0);
+  const disponible = prodDay - regDay - soldDay;
+  const price = prodPrice(productId);
+  box.innerHTML = `<div class="row"><span>Producido del día</span><b>${fmtNum(prodDay)} u.</b></div><div class="row"><span>Regalías del día</span><b>${fmtNum(regDay)} u.</b></div><div class="row"><span>Vendido registrado</span><b>${fmtNum(soldDay)} u.</b></div><div class="row total"><span>Disponible a vender</span><b>${fmtNum(disponible)} u. · ${fmtMoney(disponible * price)}</b></div>`;
+}
+
+function updateSaleTotal() {
+  const sel = document.getElementById('saleProduct'); const inp = document.getElementById('saleUnitsInput');
+  if (!sel || !inp) return;
+  const price = prodPrice(sel.value);
+  const units = parseInt(inp.value||'0', 10) || 0;
+  document.getElementById('saleTotal').textContent = fmtMoney(units * price);
+}
+
+function viewRegaliasSucursal() {
+  const today = isoDate(new Date()); const branch = state.user.branch;
+  const mine = state.regalias.filter(r => r.branch === branch).sort((a,b) => (b.ts||0) - (a.ts||0));
+  const mineToday = mine.filter(r => r.date === today);
+  const mineTodayUnits = mineToday.reduce((s,r) => s+r.qty, 0);
+  const mineTodayCUP = mineToday.reduce((s,r) => s+r.qty * prodPrice(r.productId), 0);
+  const mineRange = mine.filter(r => inRange(r.date));
+  const mineRangeUnits = mineRange.reduce((s,r) => s+r.qty, 0);
+  const mineRangeCUP = mineRange.reduce((s,r) => s+r.qty * prodPrice(r.productId), 0);
+  return `
+  <div class="note">Registra el pan entregado a un <b>beneficiario</b> sin cobro. Se descuenta del cierre del día.</div>
+  <div class="summary-box">
+    <div class="sect">Hoy · ${fmtDate(today)}</div>
+    <div class="line regalia-mine"><span>Tus regalías de hoy (${mineToday.length})</span><b class="val">${fmtNum(mineTodayUnits)} u. · ${fmtMoney(mineTodayCUP)}</b></div>
+    <div class="sect">Período</div>
+    <div class="line"><span>Tus regalías del período</span><b class="val">${fmtNum(mineRangeUnits)} u. · ${fmtMoney(mineRangeCUP)}</b></div>
+  </div>
+  <div class="card"><h3>Registrar regalía</h3>
+    <form id="regaliaFormSucursal" class="form" style="margin-top:12px">
+      <label>Fecha<input type="date" name="date" value="${today}" max="${today}" required></label>
+      <label>Producto<select name="productId">${state.products.map(p => `<option value="${p.id}">${esc(p.name)} — ${fmtMoney(p.price)}</option>`).join('')}</select></label>
+      <div class="row2">
+        <label>Cantidad (u.)<input type="number" name="qty" min="0" step="1" placeholder="0" required></label>
+        <label>Nombre del beneficiario<input type="text" name="beneficiary" placeholder="Nombre del beneficiario" required></label>
+      </div>
+      <div class="row2">
+        <label>Autorizado por<input type="text" name="authorizedBy" placeholder="Escribe quién autoriza" required></label>
+        <label>Motivo<input type="text" name="reason" placeholder="Ej. Turno nocturno" required></label>
+      </div>
+      <button class="btn btn-purple" type="submit">Registrar regalía</button>
+    </form></div>
+  <div class="card"><h3>Tus regalías registradas</h3>
+    ${mine.length ? `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Producto</th><th>Cant.</th><th>Importe</th><th style="text-align:left">Beneficiario</th><th style="text-align:left">Autorizó</th></tr></thead>
+    <tbody>${mine.slice(0, 30).map(r => `<tr><td>${fmtDate(r.date)}</td><td>${esc(prodName(r.productId))}</td><td class="purple-t">${fmtNum(r.qty)}</td><td>${fmtMoney(r.qty * prodPrice(r.productId))}</td><td style="text-align:left">${esc(r.beneficiary)}</td><td style="text-align:left">${esc(r.authorizedBy)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted small">Aún no has registrado regalías.</p>'}
+  </div>`;
+}
+
+function viewCaja() {
+  const today = isoDate(new Date());
+  const exp = expensesOfDay(state.user.branch, today);
+  const sales = salesSummaryOfDay(state.user.branch, today);
+  const cierre = cierreOfDay(state.user.branch, today);
+  const trans = cierre ? cierre.transfermovil : 0;
+  const enz = cierre ? cierre.enzona : 0;
+  const efeCobrado = cierre ? cierre.efectivoCobrado : 0;
+  const contado = cierre ? cierre.efectivoContado : 0;
+  const unjust = exp.filter(e => !e.justification || !e.justification.trim());
+  const hist = state.cashCounts.filter(c => c.branch === state.user.branch).sort((a,b) => b.date.localeCompare(a.date)).slice(0, 5);
+  return `
+  <div class="note">Registra los gastos pagados con efectivo del día y luego cierra la caja.</div>
+  <div class="summary-box">
+    <div class="sect">Producción del día · ${fmtDate(today)}</div>
+    <div class="line"><span>Producido</span><b class="val">${fmtNum(sales.producidoUnits)} u. · ${fmtMoney(sales.producidoCUP)}</b></div>
+    ${sales.regaliasCount > 0 ? `<div class="line regalia-mine"><span>Tus regalías hoy (${sales.regaliasCount})</span><b class="val">− ${fmtNum(sales.regaliasUnits)} u. · − ${fmtMoney(sales.regaliasCUP)}</b></div>` : ''}
+    <div class="line total"><span>Total a recaudar</span><b class="val">${fmtNum(sales.aVenderUnits)} u. · ${fmtMoney(sales.aVenderCUP)}</b></div>
+  </div>
+  <div class="card"><h3>Registrar gasto de efectivo</h3>
+    <form id="expenseForm" class="form" style="margin-top:12px">
+      <label>Fecha<input type="date" name="date" value="${today}" max="${today}" required></label>
+      <label>Tipo de insumo<input type="text" name="supplyName" list="supplyList" placeholder="Ej. Frazada" required autocomplete="off"><datalist id="supplyList">${state.supplies.map(s => `<option value="${esc(s.name)}"></option>`).join('')}</datalist></label>
+      <div class="row2"><label>Unidad<input type="text" name="unit" placeholder="u, kg, L" required></label><label>Cantidad<input type="number" name="qty" min="0" step="0.01" placeholder="0" required></label></div>
+      <label>Importe total ($)<input type="number" name="total" min="0" step="0.01" placeholder="0.00" required></label>
+      <label>Justificación<textarea name="justification" rows="2" required></textarea></label>
+      <div class="row2"><label>Proveedor<input type="text" name="supplier" required></label><label>Pagado por<input type="text" name="paidBy" required></label></div>
+      <label>Referencia (opcional)<input type="text" name="ref" placeholder="REC-1234"></label>
+      <button class="btn btn-primary" type="submit">Guardar gasto</button>
+    </form></div>
+  <div class="card"><h3>Gastos del día</h3>
+    ${exp.length ? `<div class="table-wrap"><table><thead><tr><th>Tipo</th><th>Unidad</th><th>Cant.</th><th>Importe</th><th style="text-align:left">Justificación</th></tr></thead>
+    <tbody>${exp.map(e => `<tr><td>${esc(e.supplyName)}</td><td>${esc(e.unit)}</td><td>${fmtQty(e.qty)}</td><td>${fmtMoney(e.total)}</td><td style="text-align:left;max-width:180px;white-space:normal">${esc(e.justification || '—')}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted small">Sin gastos hoy.</p>'}
+    ${unjust.length ? `<p class="bad-t small" style="margin-top:10px">⚠ ${unjust.length} gasto(s) sin justificación</p>` : ''}
+  </div>
+  <div class="card"><h3>Cierre de caja del día</h3>
+    <form id="closeForm" class="form" style="margin-top:12px">
+      <label>Fecha<input type="date" name="date" value="${today}" max="${today}" required></label>
+      <div class="info-box"><b>Total a recaudar:</b> ${fmtMoney(sales.aVenderCUP)}</div>
+      ${sales.regaliasCount > 0 ? `<div class="alert-mine" style="margin-bottom:14px"><b>Tus regalías hoy:</b> ${fmtNum(sales.regaliasUnits)} u. · ${fmtMoney(sales.regaliasCUP)}</div>` : ''}
+      <div class="row3">
+        <label>Transfermóvil ($)<input type="number" name="trans" id="closeTrans" min="0" step="0.01" value="${trans}" required></label>
+        <label>Enzona ($)<input type="number" name="enz" id="closeEnz" min="0" step="0.01" value="${enz}" required></label>
+        <label>Efectivo cobrado ($)<input type="number" name="efe" id="closeEfe" min="0" step="0.01" value="${efeCobrado}" required></label>
+      </div>
+      <div class="info-box">Suma cobrada: <b id="sumCobrado">${fmtMoney((trans||0)+(enz||0)+(efeCobrado||0))}</b> · Diferencia vs a recaudar: <b id="difCobrado">${fmtMoney((trans||0)+(enz||0)+(efeCobrado||0) - sales.aVenderCUP)}</b></div>
+      <label>Efectivo contado final ($)<input type="number" name="contado" min="0" step="0.01" value="${contado}" placeholder="0.00" required></label>
+      ${cierre ? `<div class="info-box">Ya cerraste hoy. Se actualizará.</div>` : ''}
+      <button class="btn btn-primary" type="submit" ${unjust.length ? 'disabled' : ''}>${unjust.length ? 'Completa justificaciones' : 'Cerrar caja del día'}</button>
+    </form></div>
+  ${hist.length ? `<div class="card"><h3>Histórico de cierres</h3>
+    <div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cobrado</th><th>Gastos</th><th>Esperado</th><th>Contado</th><th>Desvío</th><th>Estado</th></tr></thead>
+    <tbody>${hist.map(c => {
+      const exp2 = expensesOfDay(c.branch, c.date);
+      const totalExp2 = exp2.reduce((s,e) => s + e.total, 0);
+      const expected2 = (c.efectivoCobrado||0) - totalExp2;
+      const diff2 = (c.efectivoContado||0) - expected2;
+      const pct2 = expected2 !== 0 ? (diff2/expected2)*100 : 0;
+      const ok2 = Math.abs(pct2) <= state.tolerance;
+      const cobrado2 = (c.transfermovil||0) + (c.enzona||0) + (c.efectivoCobrado||0);
+      return `<tr><td>${fmtDate(c.date)}</td><td>${fmtMoney(cobrado2)}</td><td>${fmtMoney(totalExp2)}</td><td>${fmtMoney(expected2)}</td><td>${fmtMoney(c.efectivoContado||0)}</td><td class="${ok2?'ok-t':'bad-t'}">${fmtMoney(diff2)}</td><td><span class="status-badge ${ok2?'ok':'warn'}">${ok2?'OK':'ALERTA'}</span></td></tr>`;
+    }).join('')}</tbody></table></div>
+  </div>` : ''}`;
+}
+
+function updateCloseSum() {
+  const form = document.getElementById('closeForm'); if (!form) return;
+  const trans = parseFloat(form.trans.value||'0')||0;
+  const enz = parseFloat(form.enz.value||'0')||0;
+  const efe = parseFloat(form.efe.value||'0')||0;
+  const sum = trans + enz + efe;
+  const sales = salesSummaryOfDay(state.user.branch, form.date.value || isoDate(new Date()));
+  const dif = sum - sales.aVenderCUP;
+  const elSum = document.getElementById('sumCobrado'); if (elSum) elSum.textContent = fmtMoney(sum);
+  const elDif = document.getElementById('difCobrado');
+  if (elDif) { elDif.textContent = fmtMoney(dif); elDif.style.color = Math.abs(dif) <= 0.5 ? 'var(--ok)' : 'var(--bad)'; }
+}
+
+function viewInvFisico() {
+  return `
+  <div class="note">Conteo a ciegas · Ingresa el stock físico real de cada ingrediente. Los campos aparecen vacíos: escribe exactamente lo que cuentes en almacén.</div>
+  <div class="card"><h3>Conteo físico · ${esc(state.user.branch)}</h3><p class="muted small">${fmtDate(isoDate(new Date()))}</p>
+    <form id="physicalForm" class="form" style="margin-top:12px">
+      <div class="table-wrap"><table><thead><tr><th>Ingrediente</th><th>Unidad</th><th>Contado</th></tr></thead>
+      <tbody>${state.ingredients.map(ing => `<tr><td>${esc(ing.name)}</td><td>${esc(ing.unit)}</td><td><input type="number" name="phys_${ing.id}" step="0.001" min="0" placeholder="0" value=""></td></tr>`).join('')}</tbody></table></div>
+      <div style="height:14px"></div>
+      <button class="btn btn-primary" type="submit">Guardar conteo</button>
+    </form></div>`;
+}
+
+function viewAnalisis() {
+  const prods = productSummary();
+  const totalProd = prods.reduce((s,o) => s+o.produced, 0);
+  const totalReg = prods.reduce((s,o) => s+o.regaliaUnits, 0);
+  const totalRegCost = prods.reduce((s,o) => s+o.regaliaCost, 0);
+  const totalAVender = prods.reduce((s,o) => s+o.aVender, 0);
+  const totalSold = prods.reduce((s,o) => s+o.sold, 0);
+  const totalPend = prods.reduce((s,o) => s+o.pendiente, 0);
+  const totalRevenue = prods.reduce((s,o) => s+o.revenue, 0);
+  const days = cashFlowByDay();
+  const alerts = days.filter(d => d.status === 'alerta').length + prods.filter(p => p.status === 'alerta').length;
+  const invRows = state.ingredients.map(ing => {
+    const branches = matchBranch('all') ? BRANCHES : [state.branchFilter];
+    return branches.map(b => {
+      const c = inventoryComparison(b, ing.id);
+      const cls = c.status === 'ok' ? 'ok' : c.status === 'alerta' ? 'warn' : 'none';
+      return `<tr><td>${esc(b)} · ${esc(ing.name)}</td><td>${fmtQty(c.theoretical)}</td><td>${c.physical === null ? '—' : fmtQty(c.physical)}</td><td class="${c.diff === null ? '' : c.status === 'alerta' ? 'bad-t' : 'ok-t'}">${c.diff === null ? '—' : fmtQty(c.diff)}</td><td>${c.diffPct === null ? '—' : fmtPct(c.diffPct)}</td><td><span class="status-badge ${cls}">${c.status === 'alerta' ? 'ALERTA' : c.status === 'ok' ? 'OK' : 'Sin conteo'}</span></td></tr>`;
+    }).join('');
+  }).join('');
+  return `
+  <div class="note">Análisis · Tolerancia ${fmtPct(state.tolerance)}.</div>
+  <div class="filters">
+    <select data-action="range">${[['1','Hoy'],['7','7 días'],['30','30 días'],['all','Todo']].map(([v,l]) => `<option value="${v}" ${state.range === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
+    <select data-action="branch"><option value="all" ${state.branchFilter === 'all' ? 'selected' : ''}>Todas</option>${BRANCHES.map(b => `<option value="${b}" ${state.branchFilter === b ? 'selected' : ''}>${b}</option>`).join('')}</select>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><div class="k">Producido</div><div class="v">${fmtNum(totalProd)} <span class="sub">u.</span></div></div>
+    <div class="kpi"><div class="k">Regalías</div><div class="v purple">${fmtNum(totalReg)} <span class="sub">u.</span></div><div class="sub">${fmtMoney(totalRegCost)} costo</div></div>
+    <div class="kpi"><div class="k">A vender</div><div class="v">${fmtNum(totalAVender)} <span class="sub">u.</span></div></div>
+    <div class="kpi"><div class="k">Vendido</div><div class="v">${fmtNum(totalSold)} <span class="sub">u.</span></div></div>
+    <div class="kpi"><div class="k">Pendiente</div><div class="v ${Math.abs(totalPend) <= Math.max(1, Math.abs(totalAVender) * state.tolerance/100) ? 'ok' : 'bad'}">${fmtNum(totalPend)} <span class="sub">u.</span></div></div>
+    <div class="kpi"><div class="k">Ingresos</div><div class="v">${fmtMoney(totalRevenue)}</div></div>
+    <div class="kpi"><div class="k">Alertas</div><div class="v ${alerts === 0 ? 'ok' : 'bad'}">${alerts}</div></div>
+  </div>
+  <div class="card"><h3>Producción vs regalías vs ventas</h3>
+    ${prods.length ? `<div class="table-wrap"><table><thead><tr><th>Producto</th><th>Producido</th><th>Regalía</th><th>A vender</th><th>Vendido</th><th>Pend.</th><th>Pend. %</th><th>Estado</th></tr></thead>
+    <tbody>${prods.map(o => `<tr><td>${esc(o.name)}</td><td>${fmtNum(o.produced)}</td><td class="purple-t">${fmtNum(o.regaliaUnits)}</td><td>${fmtNum(o.aVender)}</td><td>${fmtNum(o.sold)}</td><td class="${Math.abs(o.pendientePct) <= state.tolerance ? 'ok-t' : 'bad-t'}">${fmtNum(o.pendiente)}</td><td class="${Math.abs(o.pendientePct) <= state.tolerance ? 'ok-t' : 'bad-t'}">${fmtPct(o.pendientePct)}</td><td><span class="status-badge ${o.status === 'alerta' ? 'warn' : 'ok'}">${o.status === 'alerta' ? 'ALERTA' : 'OK'}</span></td></tr>`).join('')}</tbody></table></div>` : '<p class="muted small">Sin datos.</p>'}
+  </div>
+  <div class="card"><h3>Cuadre diario de caja</h3>
+    ${days.length ? `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Suc.</th><th>Producido</th><th>Regalías</th><th>A recaudar</th><th>Trans.</th><th>Enzona</th><th>Efectivo</th><th>Gastos</th><th>Esperado</th><th>Contado</th><th>Desvío</th><th>Estado</th></tr></thead>
+    <tbody>${days.map(d => `<tr><td>${fmtDate(d.date)}</td><td>${esc(d.branch)}</td><td>${fmtMoney(d.producidoCUP)}</td><td class="purple-t">${fmtMoney(d.regaliasCUP)}</td><td>${fmtMoney(d.aRecaudarCUP)}</td><td>${fmtMoney(d.transIn)}</td><td>${fmtMoney(d.enzIn)}</td><td>${fmtMoney(d.efeCobrado)}</td><td>${fmtMoney(d.gastos)}</td><td>${fmtMoney(d.expected)}</td><td>${fmtMoney(d.counted)}</td><td class="${d.status === 'alerta' ? 'bad-t' : 'ok-t'}">${fmtMoney(d.diff)}</td><td><span class="status-badge ${d.status === 'alerta' ? 'warn' : 'ok'}">${d.status === 'alerta' ? 'ALERTA' : 'OK'}</span></td></tr>`).join('')}</tbody></table></div>` : '<p class="muted small">Sin cierres.</p>'}
+  </div>
+  <div class="card"><h3>Desviación de inventario</h3>
+    <div class="table-wrap"><table><thead><tr><th>Sucursal · Ingrediente</th><th>Teórico</th><th>Físico</th><th>Dif.</th><th>Dif. %</th><th>Estado</th></tr></thead>
+    <tbody>${invRows}</tbody></table></div>
+  </div>`;
+}
+
+function viewTablero() {
+  const prods = productSummary();
+  const t = prods.reduce((a,o) => ({ revenue: a.revenue + o.revenue, cogs: a.cogs + o.cogs, regaliaCost: a.regaliaCost + o.regaliaCost }), { revenue:0, cogs:0, regaliaCost:0 });
+  const margin = t.revenue - t.cogs - t.regaliaCost;
+  const marginPct = t.revenue ? margin/t.revenue*100 : 0;
+  return `
+  <div class="filters">
+    <select data-action="range">${[['1','Hoy'],['7','7 días'],['30','30 días'],['all','Todo']].map(([v,l]) => `<option value="${v}" ${state.range === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
+    <select data-action="branch"><option value="all" ${state.branchFilter === 'all' ? 'selected' : ''}>Todas</option>${BRANCHES.map(b => `<option value="${b}" ${state.branchFilter === b ? 'selected' : ''}>${b}</option>`).join('')}</select>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><div class="k">Ingresos</div><div class="v">${fmtMoney(t.revenue)}</div></div>
+    <div class="kpi"><div class="k">COGS</div><div class="v">${fmtMoney(t.cogs)}</div></div>
+    <div class="kpi"><div class="k">Costo regalía</div><div class="v purple">${fmtMoney(t.regaliaCost)}</div></div>
+    <div class="kpi"><div class="k">Margen neto</div><div class="v ${margin >= 0 ? 'ok' : 'bad'}">${fmtMoney(margin)}</div></div>
+    <div class="kpi"><div class="k">Margen %</div><div class="v ${marginPct >= 25 ? 'ok' : marginPct < 10 ? 'bad' : ''}">${fmtPct(marginPct)}</div></div>
+  </div>
+  <div class="card"><h3>Rentabilidad por producto</h3>
+    ${prods.length ? `<div class="table-wrap"><table><thead><tr><th>Producto</th><th>Vend.</th><th>Ingresos</th><th>COGS</th><th>Regalía</th><th>Margen</th><th>Margen %</th></tr></thead>
+    <tbody>${prods.sort((a,b) => b.margin - a.margin).map(o => `<tr><td>${esc(o.name)}</td><td>${fmtNum(o.sold)}</td><td>${fmtMoney(o.revenue)}</td><td>${fmtMoney(o.cogs)}</td><td class="purple-t">${fmtMoney(o.regaliaCost)}</td><td>${fmtMoney(o.margin)}</td><td class="${o.marginPct >= 25 ? 'ok-t' : o.marginPct < 10 ? 'bad-t' : ''}">${fmtPct(o.marginPct)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted small">Sin datos.</p>'}
+  </div>`;
+}
+
+function viewRecetasRO() {
+  return `
+  <div class="read-only-note">📊 <b>Vista de solo lectura</b><br>Para modificar las recetas, edita directamente la hoja <b>RECETAS</b> en Google Sheets.</div>
+  <div class="card"><h3>Ingredientes y costos</h3>
+    <div class="table-wrap"><table><thead><tr><th>Ingrediente</th><th>Unidad</th><th>Costo</th></tr></thead>
+    <tbody>${state.ingredients.map(ing => `<tr><td>${esc(ing.name)}</td><td>${esc(ing.unit)}</td><td>${fmtMoney(ing.cost)}</td></tr>`).join('')}</tbody></table></div>
+  </div>
+  ${state.products.map(p => {
+    const rec = state.recipes[p.id] || { unitsPerCart: 0, ingredients: [] };
+    const cCost = cartCost(p.id);
+    const uCost = rec.unitsPerCart ? cCost/rec.unitsPerCart : 0;
+    const margin = p.price - uCost;
+    const marginPct = p.price ? margin/p.price*100 : 0;
+    return `<div class="card"><h3>${esc(p.name)}</h3>
+      <div class="info-box"><div><b>Unidades por carrito:</b> ${rec.unitsPerCart} u.</div><div><b>Costo por carrito:</b> ${fmtMoney(cCost)}</div><div><b>Costo por unidad:</b> ${fmtMoney(uCost)}</div><div><b>Precio:</b> ${fmtMoney(p.price)} · <b>Margen:</b> ${fmtMoney(margin)} (${fmtPct(marginPct)})</div></div>
+      ${rec.ingredients.length ? `<div class="table-wrap"><table><thead><tr><th>Ingrediente</th><th>Cantidad/carrito</th><th>Unidad</th></tr></thead>
+      <tbody>${rec.ingredients.map(ri => { const ing = state.ingredients.find(x => x.id === ri.ingredientId); if (!ing) return ''; return `<tr><td>${esc(ing.name)}</td><td>${fmtQty(ri.qtyPerCart)}</td><td>${esc(ing.unit)}</td></tr>`; }).join('')}</tbody></table></div>` : '<p class="muted small">Sin ingredientes.</p>'}
+    </div>`;
+  }).join('')}`;
+}
+
+function viewInventarioEco() {
+  const branch = state.invBranch || 'Centro';
+  const rows = state.ingredients.map(ing => {
+    const c = inventoryComparison(branch, ing.id);
+    const cls = c.status === 'ok' ? 'ok' : c.status === 'alerta' ? 'warn' : 'none';
+    return `<tr><td>${esc(ing.name)} (${esc(ing.unit)})</td><td>${fmtQty(c.theoretical)}</td><td>${c.physical === null ? '—' : fmtQty(c.physical)}</td><td class="${c.diff === null ? '' : c.status === 'alerta' ? 'bad-t' : 'ok-t'}">${c.diff === null ? '—' : fmtQty(c.diff)}</td><td>${c.diffPct === null ? '—' : fmtPct(c.diffPct)}</td><td>${c.date ? fmtDate(c.date) : '—'}</td><td><span class="status-badge ${cls}">${c.status === 'alerta' ? 'ALERTA' : c.status === 'ok' ? 'OK' : 'Sin conteo'}</span></td></tr>`;
+  }).join('');
+  const recentMovs = state.stockMoves.filter(m => m.branch === branch).sort((a,b) => (b.ts||0) - (a.ts||0)).slice(0, 15);
+  return `
+  <div class="read-only-note">📊 <b>Vista de análisis</b><br>El inventario se calcula desde los movimientos. Las compras se registran en la hoja <b>COMPRAS</b> del Sheet.</div>
+  <div class="filters">
+    <select data-action="invBranch">${BRANCHES.map(b => `<option value="${b}" ${branch === b ? 'selected' : ''}>Sucursal ${b}</option>`).join('')}</select>
+    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)">Tolerancia <input type="number" min="0" max="30" step="0.5" value="${state.tolerance}" data-action="tolerance" style="width:70px"> %</label>
+  </div>
+  <div class="card"><h3>Inventario · Sucursal ${esc(branch)}</h3>
+    <div class="table-wrap"><table><thead><tr><th>Ingrediente</th><th>Teórico</th><th>Físico</th><th>Dif.</th><th>Dif. %</th><th>Fecha</th><th>Estado</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>
+  </div>
+  <div class="card"><h3>Últimos movimientos</h3>
+    ${recentMovs.length ? `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Ingrediente</th><th>Tipo</th><th>Cant.</th><th>Costo u.</th><th style="text-align:left">Ref.</th></tr></thead>
+    <tbody>${recentMovs.map(m => `<tr><td>${fmtDate(m.date)}</td><td>${esc(ingName(m.ingredientId))}</td><td><span class="status-badge ${m.type === 'SALIDA_PRODUCCION' ? 'warn' : 'ok'}">${esc(m.type.replace('ENTRADA_','').replace('SALIDA_',''))}</span></td><td class="${m.qty < 0 ? 'bad-t' : 'ok-t'}">${fmtQty(m.qty)}</td><td>${fmtMoney(m.unitCost)}</td><td style="text-align:left">${esc(m.ref || '—')}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted small">Sin movimientos.</p>'}
+  </div>`;
+}
+
+function viewPreciosRO() {
+  return `
+  <div class="read-only-note">📊 <b>Vista de solo lectura</b><br>Para modificar precios, edita la hoja <b>PRODUCTOS</b> en Google Sheets.</div>
+  <div class="card">
+    <div class="table-wrap"><table><thead><tr><th>Producto</th><th>Costo/u</th><th>Precio</th><th>Margen</th><th>Margen %</th></tr></thead>
+    <tbody>${state.products.map(p => { const c = productCost(p.id); const m = p.price - c; const mp = p.price ? m/p.price*100 : 0; return `<tr><td>${esc(p.name)}</td><td>${fmtMoney(c)}</td><td>${fmtMoney(p.price)}</td><td>${fmtMoney(m)}</td><td class="${mp >= 25 ? 'ok-t' : mp < 10 ? 'bad-t' : ''}">${fmtPct(mp)}</td></tr>`; }).join('')}</tbody></table></div>
+  </div>`;
+}
+
+function renderApp() {
+  const u = state.user;
+  const tabs = u.role === 'sucursal'
+    ? [['produccion','Producción'],['ventas','Ventas'],['regalias','Regalías'],['caja','Caja'],['inventario','Inventario']]
+    : u.role === 'economista'
+    ? [['analisis','Análisis'],['tablero','Tablero'],['inventario','Inventario'],['recetas','Recetas'],['precios','Precios']]
+    : [['resumen','Resumen']];
+  let body = '';
+  if (u.role === 'sucursal') {
+    if (state.tab === 'ventas') body = viewVentas();
+    else if (state.tab === 'regalias') body = viewRegaliasSucursal();
+    else if (state.tab === 'caja') body = viewCaja();
+    else if (state.tab === 'inventario') body = viewInvFisico();
+    else body = viewProduccion();
+  } else if (u.role === 'economista') {
+    if (state.tab === 'tablero') body = viewTablero();
+    else if (state.tab === 'inventario') body = viewInventarioEco();
+    else if (state.tab === 'recetas') body = viewRecetasRO();
+    else if (state.tab === 'precios') body = viewPreciosRO();
+    else body = viewAnalisis();
+  } else {
+    body = viewResumenDueno();
+  }
+  app.innerHTML = `
+    <header class="appbar"><div class="appbar-in">
+      <span class="brand">🥖 Pyme BJ Tropical Bayamo<small>DEMO</small></span>
+      <div class="chip">
+        <span class="badge">${ROLE_LABEL[u.role]}</span>
+        <button class="btn-logout" data-action="logout">Salir</button>
+      </div>
+    </div></header>
+    <nav class="tabs">${tabs.map(([id,l]) => `<button class="tab ${state.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}">${l}</button>`).join('')}</nav>
+    <main class="wrap">${body}</main>`;
+}
+
+function render() {
+  if (!state.user) viewLogin();
+  else renderApp();
+  if (state.user && state.tab === 'ventas') { updateSaleInfo(); updateSaleTotal(); }
+  if (state.user && state.tab === 'produccion') updateProdPreview();
+  if (state.user && state.tab === 'caja') updateCloseSum();
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const a = el.dataset.action;
+  if (a === 'digit') { if (state.user || state.pin.length >= 4) return; state.pin += el.dataset.digit; state.error = ''; render(); if (state.pin.length === 4) tryLogin(); }
+  if (a === 'clear') { state.pin = state.pin.slice(0,-1); render(); }
+  if (a === 'enter') { if (state.pin.length === 4) tryLogin(); else { state.error = 'Ingresa 4 dígitos'; render(); } }
+  if (a === 'logout') { state.user = null; state.pin = ''; state.authPin = ''; state.error = ''; render(); }
+  if (a === 'tab') { state.tab = el.dataset.tab; render(); }
+  if (a === 'chartRange') { state.chartRange = el.dataset.range; render(); }
+});
+
+document.addEventListener('change', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  if (el.dataset.action === 'range') { state.range = el.value; render(); }
+  if (el.dataset.action === 'branch') { state.branchFilter = el.value; render(); }
+  if (el.dataset.action === 'invBranch') { state.invBranch = el.value; render(); }
+  if (el.dataset.action === 'tolerance') { const v = parseFloat(el.value); if (!isNaN(v) && v >= 0 && v <= 30) { state.tolerance = v; DB.tolerance = v; saveDB(); render(); } }
+});
+
+document.addEventListener('input', e => {
+  if (['saleProduct','saleDate','saleUnitsInput'].includes(e.target.id)) { updateSaleInfo(); updateSaleTotal(); }
+  if (['prodCarts','prodProduct'].includes(e.target.id)) updateProdPreview();
+  if (e.target.closest('#closeForm') && ['trans','enz','efe','date'].some(n => e.target.name === n)) updateCloseSum();
+});
+
+document.addEventListener('submit', async e => {
+  const id = e.target.id;
+  if (id === 'prodForm') { e.preventDefault(); await saveProduction(e.target); }
+  else if (id === 'salesForm') { e.preventDefault(); await saveSales(e.target); }
+  else if (id === 'expenseForm') { e.preventDefault(); await saveExpense(e.target); }
+  else if (id === 'closeForm') { e.preventDefault(); openCloseModal(e.target); }
+  else if (id === 'physicalForm') { e.preventDefault(); await savePhysical(e.target); }
+  else if (id === 'regaliaFormSucursal') { e.preventDefault(); await saveRegalia(e.target); }
+});
+
+async function saveProduction(form) {
+  const fd = new FormData(form);
+  const payload = { date: fd.get('date'), productId: fd.get('productId'), carts: parseFloat(fd.get('carts')) };
+  if (!payload.date || !payload.productId || !payload.carts) return showError('Completa todos los campos');
+  loading(true);
+  try {
+    const r = await api('saveProduction', payload);
+    const data = await api('init'); applyData(data.data);
+    loading(false);
+    showAlert(`Producción registrada: <b>${r.unidades} unidades</b>.<br><br>El inventario se descontó automáticamente según la receta.`, '✓ Éxito', () => render());
+  } catch (err) { loading(false); showError(err.message); }
+}
+
+async function saveSales(form) {
+  const fd = new FormData(form);
+  const payload = { date: fd.get('date'), productId: fd.get('productId'), units: parseInt(fd.get('units'),10)||0 };
+  if (!payload.date || !payload.productId || payload.units <= 0) return showError('Completa todos los campos');
+  loading(true);
+  try {
+    await api('saveSales', payload);
+    const data = await api('init'); applyData(data.data);
+    loading(false);
+    showAlert('Venta registrada correctamente.', '✓ Éxito', () => render());
+  } catch (err) { loading(false); showError(err.message); }
+}
+
+async function saveExpense(form) {
+  const fd = new FormData(form);
+  const payload = {
+    date: fd.get('date'),
+    supplyName: (fd.get('supplyName')||'').trim(),
+    unit: (fd.get('unit')||'').trim(),
+    qty: parseFloat(fd.get('qty')),
+    total: parseFloat(fd.get('total')),
+    justification: (fd.get('justification')||'').trim(),
+    supplier: (fd.get('supplier')||'').trim(),
+    paidBy: (fd.get('paidBy')||'').trim(),
+    ref: (fd.get('ref')||'').trim()
+  };
+  loading(true);
+  try {
+    await api('saveExpense', payload);
+    const data = await api('init'); applyData(data.data);
+    loading(false);
+    showAlert('Gasto registrado con su justificación.', '✓ Éxito', () => render());
+  } catch (err) { loading(false); showError(err.message); }
+}
+
+function openCloseModal(form) {
+  const fd = new FormData(form);
+  const date = fd.get('date');
+  const trans = parseFloat(fd.get('trans'))||0;
+  const enz = parseFloat(fd.get('enz'))||0;
+  const efe = parseFloat(fd.get('efe'))||0;
+  const contado = parseFloat(fd.get('contado'))||0;
+  if (!date) return showError('Indica la fecha');
+  const exp = expensesOfDay(state.user.branch, date);
+  if (exp.filter(e => !e.justification).length) return showError('Hay gastos sin justificar. Complétalos antes de cerrar.');
+  const sales = salesSummaryOfDay(state.user.branch, date);
+  const totalExp = exp.reduce((s,e) => s + e.total, 0);
+  const cobrado = trans + enz + efe;
+  const diffCobro = cobrado - sales.aVenderCUP;
+  const esperadoEfe = efe - totalExp;
+  const diffEfe = contado - esperadoEfe;
+  const pct = esperadoEfe !== 0 ? (diffEfe/esperadoEfe)*100 : 0;
+  const okCobro = Math.abs(diffCobro) <= 0.5;
+  const estadoEfe = diffEfe > 0 ? 'SOBRA' : diffEfe < 0 ? 'FALTA' : 'CUADRADO';
+
+  const body = `<div class="modal-summary">
+    <div class="ms-sect">Producción del día</div>
+    <div class="ms-row"><span>Producido</span><b>${fmtNum(sales.producidoUnits)} u. · ${fmtMoney(sales.producidoCUP)}</b></div>
+    ${sales.regaliasCount > 0 ? `<div class="ms-row regalia-mine"><span>Tus regalías hoy</span><b>${fmtNum(sales.regaliasUnits)} u. · − ${fmtMoney(sales.regaliasCUP)}</b></div>` : ''}
+    <div class="ms-row total"><span>Total a recaudar</span><b>${fmtNum(sales.aVenderUnits)} u. · ${fmtMoney(sales.aVenderCUP)}</b></div>
+    <div class="ms-sect">Desglose cobrado</div>
+    <div class="ms-row"><span>Transfermóvil</span><b>${fmtMoney(trans)}</b></div>
+    <div class="ms-row"><span>Enzona</span><b>${fmtMoney(enz)}</b></div>
+    <div class="ms-row"><span>Efectivo cobrado</span><b>${fmtMoney(efe)}</b></div>
+    <div class="ms-row total"><span>Total cobrado</span><b>${fmtMoney(cobrado)}</b></div>
+    <div class="ms-row ${okCobro ? 'ok' : 'bad'}"><span>Diferencia vs a recaudar</span><b>${fmtMoney(diffCobro)}</b></div>
+    <div class="ms-sect">Cuadre de efectivo</div>
+    <div class="ms-row"><span>Efectivo cobrado</span><b>${fmtMoney(efe)}</b></div>
+    <div class="ms-row"><span>Gastos del día</span><b>− ${fmtMoney(totalExp)}</b></div>
+    <div class="ms-row total"><span>Efectivo esperado</span><b>${fmtMoney(esperadoEfe)}</b></div>
+    <div class="ms-row"><span>Efectivo contado</span><b>${fmtMoney(contado)}</b></div>
+    <div class="ms-row ${diffEfe === 0 ? 'ok' : (diffEfe > 0 ? 'sobra' : 'falta')}">
+      <span>${estadoEfe}</span>
+      <b>${diffEfe > 0 ? '+' : ''}${fmtMoney(diffEfe)} ${esperadoEfe !== 0 ? `(${fmtPct(pct)})` : ''}</b>
+    </div>
+  </div>
+  <p class="modal-q">¿Cerrar la caja del día?</p>`;
+
+  openModal({
+    title: 'Cerrar caja',
+    sub: fmtDate(date),
+    body,
+    confirmText: 'Sí, cerrar caja',
+    onConfirm: async () => {
+      loading(true);
+      try {
+        await api('saveClose', { date, transfermovil: trans, enzona: enz, efectivoCobrado: efe, efectivoContado: contado });
+        const data = await api('init'); applyData(data.data);
+        loading(false);
+        const tipo = diffEfe > 0 ? 'sobró' : diffEfe < 0 ? 'faltó' : 'cuadró';
+        const emoji = diffEfe === 0 ? '✓' : (diffEfe > 0 ? '💰' : '⚠');
+        showAlert(`Cierre registrado.<br><br>${emoji} ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}: <b>${fmtMoney(Math.abs(diffEfe))}</b>`, diffEfe === 0 ? '✓ Cierre exacto' : (Math.abs(diffEfe) < 1 ? 'Cierre OK' : 'Cierre con desvío'), () => render());
+      } catch (err) { loading(false); showError(err.message); }
+    }
+  });
+}
+
+async function savePhysical(form) {
+  const fd = new FormData(form);
+  const date = isoDate(new Date());
+  const items = [];
+  state.ingredients.forEach(ing => {
+    const v = fd.get('phys_' + ing.id);
+    if (v === null || v === '') return;
+    const qty = parseFloat(v);
+    if (isNaN(qty) || qty < 0) return;
+    items.push({ ingredientId: ing.id, qty });
+  });
+  if (!items.length) return showError('Ingresa al menos un valor del conteo');
+  loading(true);
+  try {
+    await api('savePhysical', { date, items });
+    const data = await api('init'); applyData(data.data);
+    loading(false);
+    showAlert(`Conteo físico registrado para <b>${items.length}</b> ingredientes.<br><br>Economía podrá comparar con el teórico.`, '✓ Éxito', () => render());
+  } catch (err) { loading(false); showError(err.message); }
+}
+
+async function saveRegalia(form) {
+  const fd = new FormData(form);
+  const payload = {
+    date: fd.get('date'), productId: fd.get('productId'),
+    qty: parseFloat(fd.get('qty')),
+    beneficiary: (fd.get('beneficiary')||'').trim(),
+    authorizedBy: (fd.get('authorizedBy')||'').trim(),
+    reason: (fd.get('reason')||'').trim()
+  };
+  if (!payload.date || !payload.productId) return showError('Completa fecha y producto');
+  if (!payload.qty || payload.qty <= 0) return showError('Cantidad inválida');
+  if (!payload.beneficiary) return showError('Indica el nombre del beneficiario');
+  if (!payload.authorizedBy) return showError('Indica quién autoriza');
+  if (!payload.reason) return showError('Indica el motivo');
+  loading(true);
+  try {
+    await api('saveRegalia', payload);
+    const data = await api('init'); applyData(data.data);
+    loading(false);
+    showAlert(`Regalía registrada: <b>${payload.qty} u.</b> a ${esc(payload.beneficiary)}.<br><br>Se descontará del cierre de caja.`, '✓ Éxito', () => render());
+  } catch (err) { loading(false); showError(err.message); }
+}
+
+document.addEventListener('keydown', e => {
+  if (state.user) return;
+  if (/^[0-9]$/.test(e.key)) { if (state.pin.length < 4) { state.pin += e.key; state.error = ''; render(); if (state.pin.length === 4) tryLogin(); } }
+  else if (e.key === 'Backspace') { state.pin = state.pin.slice(0, -1); render(); }
+});
+
+DB = loadDB();
+if (!DB) { seedDemo(); render(); }
+else { render(); }
+</script>
+</body>
+</html>
